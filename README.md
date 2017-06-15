@@ -1,2 +1,0 @@
-# NETCore.DapperKit
-Dapper extensions
