@@ -31,7 +31,7 @@ namespace NETCore.DapperKit.Infrastructure
         /// <param name="options">dapper options</param>
         /// <param name="lifetime">sevice left time</param>
         /// <returns></returns>
-        public IDapperKitOptionsBuilder UseDapper(DapperKitOptions options, ServiceLifetime lifetime)
+        public IDapperKitOptionsBuilder UseDapper(DapperKitOptions options, ServiceLifetime lifetime = ServiceLifetime.Scoped)
         {
             Check.Argument.IsNotNull(options, nameof(options), "The dapper options is null");
 

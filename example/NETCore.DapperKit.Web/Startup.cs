@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NETCore.DapperKit.Extensions;
+using NETCore.DapperKit.Infrastructure.Internal;
 
 namespace NETCore.DapperKit.Web
 {
@@ -29,6 +31,15 @@ namespace NETCore.DapperKit.Web
         {
             // Add framework services.
             services.AddMvc();
+
+            // Add DapperKit
+            services.AddDapperKit(optionsBuilder =>
+            {
+                optionsBuilder.UseDapper(new DapperKitOptions()
+                {
+                    ConnectionString = "Data Source=.;User ID=sa;Password='123456';Initial Catalog=DapperDb;MultipleActiveResultSets=True;"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
