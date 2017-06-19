@@ -19,5 +19,6 @@ namespace NETCore.DapperKit
         /// </summary>
         /// <returns></returns>
         IDbConnection DbConnection { get; }
+
     }
 }

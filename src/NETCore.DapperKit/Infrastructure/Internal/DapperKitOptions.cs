@@ -12,8 +12,14 @@ namespace NETCore.DapperKit.Infrastructure.Internal
         public string ConnectionString { get; set; }
 
         /// <summary>
+        /// database type
+        /// </summary>
+        public DatabaseType DatabaseType { get; set; } = DatabaseType.SQLServer;
+
+        /// <summary>
         /// command time out
         /// </summary>
         public int? CommandTimeout { get; set; }
+
     }
 }

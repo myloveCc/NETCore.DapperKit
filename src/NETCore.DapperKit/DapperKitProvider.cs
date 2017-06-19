@@ -32,6 +32,8 @@ namespace NETCore.DapperKit
             }
         }
 
+
+
         /// <summary>
         /// create lazy db connection
         /// </summary>
