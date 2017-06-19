@@ -3,17 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Data;
-using System.Data.SqlClient;
-using NETCore.DapperKit.Expression.QueryAble;
+using NETCore.DapperKit.Expression.Query;
 
 namespace NETCore.DapperKit.Expression.Extensions
 {
     public static class DbConnectionExtensions
     {
-        public static SqlQueryProvier<T> SqlQuery<T>(this IDbConnection conn) where T : class
+        public static SqlQueryAble<T> SqlQuery<T>(this IDbConnection conn) where T : class
         {
             //TODO
-            return new SqlQueryProvier<T>(conn);
+            return new SqlQueryAble<T>(conn);
         }
     }
 }
