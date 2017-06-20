@@ -4,9 +4,12 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;COREFX;ASYNC;NETCOREAPP1_1</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.2" />
-    <PackageReference Include="Dapper.Contrib" Version="1.50.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
     <PackageReference Include="System.Data.SqlClient" Version="4.3.1" />
   </ItemGroup>

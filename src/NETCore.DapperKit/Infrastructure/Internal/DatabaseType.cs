@@ -7,7 +7,6 @@ namespace NETCore.DapperKit.Infrastructure.Internal
     public enum DatabaseType
     {
         SQLServer,
-        MySQL,
-        SQLite
+        MySQL
     }
 }

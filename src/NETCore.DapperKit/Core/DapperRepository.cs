@@ -4,8 +4,10 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
-using Dapper.Contrib.Extensions;
 using NETCore.DapperKit.Shared;
+using NETCore.DapperKit.Extensions;
+using NETCore.DapperKit.ExpressionToSql.Extensions;
+using System.Linq.Expressions;
 
 namespace NETCore.DapperKit.Core
 {
@@ -185,7 +187,7 @@ namespace NETCore.DapperKit.Core
         /// <summary>
         /// Get data with sql and param
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">type of entity</typeparam>
         /// <param name="sql">sql string</param>
         /// <param name="param">sql param</param>
         /// <param name="type"><see cref="CommandType"/></param>
@@ -198,6 +200,37 @@ namespace NETCore.DapperKit.Core
             {
                 return conn.QueryFirstOrDefault<T>(sql, param, commandTimeout: _DapperKitProvider.Options.CommandTimeout, commandType: type);
             }
+        }
+
+
+        public T GetInfo<T>(Expression<Func<T, bool>> where) where T : class
+        {
+            Check.Argument.IsNotNull(where, nameof(where));
+            return _DapperKitProvider.DataSet<T>().Select().Where(where).FirstOrDefault<T>();
+        }
+
+
+        /// <summary>
+        /// Get data collection with sql and param
+        /// </summary>
+        /// <typeparam name="T">type of entity</typeparam>
+        /// <param name="sql">sql string</param>
+        /// <param name="param">sql param</param>
+        /// <param name="type"><see cref="CommandType"/></param>
+        /// <returns></returns>
+        public IEnumerable<T> GetList<T>(string sql, DynamicParameters param = null, CommandType? type = null) where T : class
+        {
+            Check.Argument.IsNotEmpty(sql, nameof(sql));
+
+            using (var conn = _DapperKitProvider.DbConnection)
+            {
+                return conn.Query<T>(sql, param, commandTimeout: _DapperKitProvider.Options.CommandTimeout, commandType: type);
+            }
+        }
+
+        public IEnumerable<T> GetList<T>(Expression<Func<T, bool>> where) where T : class
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -373,19 +406,6 @@ namespace NETCore.DapperKit.Core
         }
 
         /// <summary>
-        /// Get all datas
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public Task<IEnumerable<T>> GetAllAsync<T>() where T : class
-        {
-            using (var conn = _DapperKitProvider.DbConnection)
-            {
-                return conn.GetAllAsync<T>(commandTimeout: _DapperKitProvider.Options.CommandTimeout);
-            }
-        }
-
-        /// <summary>
         /// Get data by id
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -418,6 +438,38 @@ namespace NETCore.DapperKit.Core
                 return conn.QueryFirstOrDefaultAsync<T>(sql, param, commandTimeout: _DapperKitProvider.Options.CommandTimeout, commandType: type);
             }
         }
+
+        /// <summary>
+        /// Get data collection with sql and param
+        /// </summary>
+        /// <typeparam name="T">type of entity</typeparam>
+        /// <param name="sql">sql string</param>
+        /// <param name="param">sql param</param>
+        /// <param name="type"><see cref="CommandType"/></param>
+        /// <returns></returns>
+        public Task<IEnumerable<T>> GetListAsync<T>(string sql, DynamicParameters param = null, CommandType? type = null) where T : class
+        {
+            Check.Argument.IsNotEmpty(sql, nameof(sql));
+
+            using (var conn = _DapperKitProvider.DbConnection)
+            {
+                return conn.QueryAsync<T>(sql, param, commandTimeout: _DapperKitProvider.Options.CommandTimeout, commandType: type);
+            }
+        }
+
+        /// <summary>
+        /// Get all datas
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public Task<IEnumerable<T>> GetAllAsync<T>() where T : class
+        {
+            using (var conn = _DapperKitProvider.DbConnection)
+            {
+                return conn.GetAllAsync<T>(commandTimeout: _DapperKitProvider.Options.CommandTimeout);
+            }
+        }
+
 
         /// <summary>
         /// Transation 

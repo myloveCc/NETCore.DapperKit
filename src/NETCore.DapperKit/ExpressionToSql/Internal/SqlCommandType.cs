@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace NETCore.DapperKit.Expression.Internal
+namespace NETCore.DapperKit.ExpressionToSql.Internal
 {
     /// <summary>
     /// sql command typ
