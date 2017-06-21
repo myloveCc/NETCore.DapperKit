@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Reflection;
 using NETCore.DapperKit.ExpressionToSql.Core;
+using NETCore.DapperKit.Extensions;
 
 namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 {
@@ -26,6 +27,43 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Insert(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
+            List<string> columns = new List<string>();
+            List<string> parames = new List<string>();
+
+            object entity = GetValue(expression);
+            var properties = expression.Type.GetCloumnProperties();
+
+            foreach (var propertyInfo in properties)
+            {
+                if (propertyInfo.IsIdentity(expression.Type))
+                {
+                    continue;
+                }
+
+                //columns
+                var name = propertyInfo.Name;
+                columns.Add($"{sqlBuilder._SqlFormater.Left}{name}{sqlBuilder._SqlFormater.Right}");
+
+                var value = propertyInfo.GetValue(entity, null);
+                //formater bool value to true:1 false:0
+                if (value is bool)
+                {
+                    if ((bool)value)
+                    {
+                        value = 1;
+                    }
+                    else
+                    {
+                        value = 0;
+                    }
+                }
+                string sqlParamName = sqlBuilder.SetSqlParameter(value);
+                //params
+                parames.Add($"{sqlParamName}");
+            }
+
+            sqlBuilder.AppendInsertSql($"({string.Join(",", columns)}) VALUES ({string.Join(",", parames)})");
+
             return sqlBuilder;
         }
 
@@ -75,6 +113,15 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
         {
             return sqlBuilder;
         }
+
+
+        protected override ISqlBuilder Delete(MemberExpression expression, ISqlBuilder sqlBuilder)
+        {
+            sqlBuilder.AppendWhereSql($"{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right} ");
+
+            return sqlBuilder;
+        }
+
 
         private ISqlBuilder AggregateFunctionParser(MemberExpression expression, ISqlBuilder sqlBuilder, string functionName)
         {

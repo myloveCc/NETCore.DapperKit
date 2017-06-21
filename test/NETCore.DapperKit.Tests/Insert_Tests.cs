@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using NETCore.DapperKit.Extensions;
 using NETCore.DapperKit.ExpressionToSql.Extensions;
+using NETCore.DapperKit.Tests.Model;
 
 namespace NETCore.DapperKit.Tests
 {
@@ -18,28 +19,42 @@ namespace NETCore.DapperKit.Tests
             });
         }
 
-        [Fact]
-        public void Test1()
+        [Fact(DisplayName = "Insert new test")]
+        public void Insert_New_Test()
         {
-            var sqlBuilder = _Provider.DataSet<SysUser>().Insert(() => new SysUser() { Account = "admin", Password = "123456", CreateTime = DateTime.Now }).SqlBuilder;
+
+            var query = _Provider.DataSet<SysUser>().Insert(() => new SysUser() { Account = "admin", Password = "123456", IsAdmin = false, UserRoleName = "Test", CreateTime = Convert.ToDateTime("1987-01-28") });
+            var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSqlString();
+            var paramVals = sqlBuilder.GetSqlParameters();
+
+            Assert.NotEmpty(sql);
+            Assert.Equal("INSERT INTO [SysUser] ([Account],[Password],[IsAdmin],[CreateTime]) VALUES (@param0,@param1,@param2,@param3);", sql);
+            Assert.Equal(4, paramVals.Count);
         }
 
+        [Fact(DisplayName = "Insert instance test")]
+        public void Insert_Instance_Test()
+        {
+            var user = new SysUser()
+            {
+                Account = "admin",
+                Password = "123456",
+                IsAdmin = false,
+                UserRoleName = "Test",
+                CreateTime = Convert.ToDateTime("1987-01-28")
+            };
 
+            var query = _Provider.DataSet<SysUser>().Insert(() => user);
+            var sqlBuilder = query.SqlBuilder;
 
-    }
+            var sql = sqlBuilder.GetSqlString();
+            var paramVals = sqlBuilder.GetSqlParameters();
 
-    [Table("SysUser")]
-    public class SysUser
-    {
-        [Key]
-        public int Id { get; set; }
-
-        public string Account { get; set; }
-
-        public string Password { get; set; }
-
-        public DateTime? CreateTime { get; set; }
+            Assert.NotEmpty(sql);
+            Assert.Equal("INSERT INTO [SysUser] ([Account],[Password],[IsAdmin],[CreateTime]) VALUES (@param0,@param1,@param2,@param3);", sql);
+            Assert.Equal(4, paramVals.Count);
+        }
     }
 }

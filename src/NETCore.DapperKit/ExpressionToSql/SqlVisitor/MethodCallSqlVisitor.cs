@@ -36,10 +36,20 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         }
 
+
         protected override ISqlBuilder Where(MethodCallExpression expression, ISqlBuilder sqlBuilder)
         {
 
             throw new NotImplementedException("Unimplemented method:" + expression.Method);
+        }
+
+        protected override ISqlBuilder Delete(MethodCallExpression expression, ISqlBuilder sqlBuilder)
+        {
+            var value = GetExpreesionValue(expression);
+            var sqlParamName = sqlBuilder.SetSqlParameter(value);
+
+            sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+            return sqlBuilder;
         }
     }
 }

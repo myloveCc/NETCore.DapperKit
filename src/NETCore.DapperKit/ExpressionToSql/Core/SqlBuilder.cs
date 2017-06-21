@@ -77,7 +77,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// get sql param dictionary
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, object> GetSetSqlParameters()
+        public Dictionary<string, object> GetSqlParameters()
         {
             return _SqlParameters;
         }
@@ -90,9 +90,23 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         {
             if (_SqlCommandType == SqlCommandType.Insert)
             {
-                return _InsertSqlBuilder.ToString();
+                return $"{_InsertSqlBuilder.ToString().TrimEnd()};";
             }
 
+            if (_SqlCommandType == SqlCommandType.Delete)
+            {
+
+                var deleteSql = string.Empty;
+
+                deleteSql = $"{_DeleteSqlBuilder.ToString()}";
+
+                if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+                {
+                    deleteSql += _WhereSqlBuilder.ToString();
+                }
+
+                return $"{deleteSql.TrimEnd()};";
+            }
             //TODO
             return string.Empty;
         }
@@ -182,7 +196,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                 _UpdateSqlBuilder.Append(sql);
             }
         }
-       
+
         /// <summary>
         /// append select sql
         /// </summary>
@@ -215,7 +229,6 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
             }
         }
 
-
         /// <summary>
         /// append where sql
         /// </summary>
@@ -227,6 +240,11 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                 if (_WhereSqlBuilder == null)
                 {
                     _WhereSqlBuilder = new StringBuilder();
+                }
+
+                if (_WhereSqlBuilder.Length == 0)
+                {
+                    _WhereSqlBuilder.Append("WHERE ");
                 }
 
                 _WhereSqlBuilder.Append(sql);

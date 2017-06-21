@@ -8,6 +8,5 @@ namespace NETCore.DapperKit.ExpressionToSql.Query.Interface
     public interface IDeleteQueryAble<T> : ISqlQueryAble<T> where T : class
     {
 
-        IDeleteQueryAble<T> Where(Expression<Func<T, bool>> whereExpression);
     }
 }

@@ -13,15 +13,5 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         {
 
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="whereExpression"></param>
-        /// <returns></returns>
-        public IDeleteQueryAble<T> Where(Expression<Func<T, bool>> whereExpression)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -15,24 +15,24 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             {
                 case ExpressionType.And:
                 case ExpressionType.AndAlso:
-                    return " and";
+                    return "AND ";
                 case ExpressionType.Equal:
                     if (useIs)
                     {
-                        return " is";
+                        return "IS ";
                     }
                     else
                     {
-                        return " =";
+                        return "= ";
                     }
                 case ExpressionType.GreaterThan:
-                    return " >";
+                    return "> ";
                 case ExpressionType.GreaterThanOrEqual:
-                    return " >=";
+                    return ">= ";
                 case ExpressionType.NotEqual:
                     if (useIs)
                     {
-                        return " is not";
+                        return "IS NOT";
                     }
                     else
                     {
@@ -40,11 +40,11 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     }
                 case ExpressionType.Or:
                 case ExpressionType.OrElse:
-                    return " or";
+                    return "OR ";
                 case ExpressionType.LessThan:
-                    return " <";
+                    return "< ";
                 case ExpressionType.LessThanOrEqual:
-                    return " <=";
+                    return "<= ";
                 default:
                     throw new NotImplementedException("Unimplemented expressionType:" + expressionNodeType);
             }
@@ -223,27 +223,86 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             return true;
         }
 
-        //检查二元表达式左侧的Expression是否为非数据列属性
-        private static bool CheckMemberIsNotColumn(BinaryExpression expression, ISqlBuilder sqlBuilder)
-        {
-            return false;
-        }
 
         protected override ISqlBuilder Join(BinaryExpression expression, ISqlBuilder sqlBuilder)
         {
-            if (CheckMemberIsNotColumn(expression, sqlBuilder))
-            {
-                return sqlBuilder;
-            }
+
 
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Where(BinaryExpression expression, ISqlBuilder sqlBuilder)
         {
-            if (CheckMemberIsNotColumn(expression, sqlBuilder))
+
+
+            return sqlBuilder;
+        }
+
+        protected override ISqlBuilder Delete(BinaryExpression expression, ISqlBuilder sqlBuilder)
+        {
+            var expressionLeft = expression.Left;
+            var expressionRight = expression.Right;
+
+            if (expressionLeft is MemberExpression)
             {
-                return sqlBuilder;
+                var memberExp = expressionLeft as MemberExpression;
+
+                if (MemberIsDataColumn(memberExp, sqlBuilder))
+                {
+                    SqlVistorProvider.Delete(expressionLeft, sqlBuilder);
+                    // m.IsAdmin
+                    if (memberExp.Type == typeof(bool))
+                    {
+                        sqlBuilder.AppendWhereSql($"{OperatorParser(ExpressionType.Equal)}");
+
+                        var isRightHandle = false;
+                        var sqlParamName = string.Empty;
+                        if (expression.Right is ConstantExpression)
+                        {
+                            isRightHandle = true;
+                            var value = Convert.ToBoolean(((ConstantExpression)expressionRight).Value) ? 1 : 0;
+                            sqlParamName = sqlBuilder.SetSqlParameter(value);
+                        }
+                        else
+                        {
+                            sqlParamName = sqlBuilder.SetSqlParameter(1);
+                        }
+
+                        sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+
+                        if (!isRightHandle)
+                        {
+                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
+                            SqlVistorProvider.Delete(expressionRight, sqlBuilder);
+                        }
+                    }
+                    else
+                    {
+                        //m.DateTime==null or m.DateTime!=null
+                        if (expressionRight is ConstantExpression && ((ConstantExpression)expression.Right).Value == null)
+                        {
+                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType, true)}");
+                        }
+                        else
+                        {
+                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
+                        }
+                        SqlVistorProvider.Delete(expressionRight, sqlBuilder);
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
+                }
+            }
+            else
+            {
+                SqlVistorProvider.Delete(expressionLeft, sqlBuilder);
+
+                sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
+
+                SqlVistorProvider.Delete(expressionRight, sqlBuilder);
+
             }
 
             return sqlBuilder;

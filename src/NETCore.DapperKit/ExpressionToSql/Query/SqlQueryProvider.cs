@@ -37,7 +37,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
 
             SqlVistorProvider.Insert(expression.Body, _SqlBuilder);
 
-            return new IsertQueryAble<T>(_SqlBuilder, _DapperKitProvider);
+            return new InsertQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
         /// <summary>
@@ -45,10 +45,15 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public IDeleteQueryAble<T> Delete(Expression<Func<T, bool>> expression)
+        public IDeleteQueryAble<T> Delete(Expression<Func<T, bool>> expression = null)
         {
             _SqlBuilder.AppendDeleteSql($"DELETE {_MainTableName} ");
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Delete);
+
+            if (expression != null)
+            {
+                SqlVistorProvider.Delete(expression.Body, _SqlBuilder);
+            }
             return new DeleteQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
@@ -61,7 +66,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         {
             Check.Argument.IsNotNull(expression, nameof(expression));
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Update);
-            _SqlBuilder.AppendUpdateSql($"UPDATE {_MainTableName} SET");
+            _SqlBuilder.AppendUpdateSql($"UPDATE {_MainTableName} SET ");
 
             return new UpdateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
@@ -120,6 +125,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         private ISelectQueryAble<T> SelectParser(Expression expression, Expression expressionBody, params Type[] types)
         {
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Select);
+            _SqlBuilder.SetTableAlias(_MainTableName);
             _SqlBuilder.AppendSelectSql("SELECT {0} FROM " + _MainTableName + " " + _SqlBuilder.GetTableAlias(_MainTableName));
 
             if (expression != null)

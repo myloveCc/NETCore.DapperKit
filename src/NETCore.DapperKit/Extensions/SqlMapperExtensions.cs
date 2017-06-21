@@ -306,6 +306,16 @@ namespace NETCore.DapperKit.Extensions
         }
 
         /// <summary>
+        /// get all column
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static List<PropertyInfo> GetCloumnProperties(this Type type)
+        {
+            return TypePropertiesCache(type);
+        }
+
+        /// <summary>
         /// check is identity column
         /// </summary>
         /// <param name="info"><see cref="PropertyInfo"/></param>

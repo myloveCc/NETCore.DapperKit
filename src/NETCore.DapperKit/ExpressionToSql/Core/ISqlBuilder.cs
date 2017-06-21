@@ -42,7 +42,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// get sql param dic
         /// </summary>
         /// <returns></returns>
-        Dictionary<string, object> GetSetSqlParameters();
+        Dictionary<string, object> GetSqlParameters();
 
         /// <summary>
         /// get sql string

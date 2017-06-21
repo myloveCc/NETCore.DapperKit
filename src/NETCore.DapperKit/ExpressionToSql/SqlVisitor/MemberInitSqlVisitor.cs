@@ -29,8 +29,10 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 {
                     continue;
                 }
-                columns.Add(property.Name);
+                //add column name
+                columns.Add($"{sqlBuilder._SqlFormater.Left}{property.Name}{sqlBuilder._SqlFormater.Right}");
 
+                string sqlParamName = string.Empty;
                 var memberExpression = memberAss.Expression;
                 if (memberExpression is ConstantExpression)
                 {
@@ -49,24 +51,16 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                             value = 0;
                         }
                     }
-                    string dbParamName = sqlBuilder.SetSqlParameter(value);
-                    parames.Add(dbParamName);
+                    sqlParamName = sqlBuilder.SetSqlParameter(value);
                 }
-                //DateTime.Now
-                if (memberExpression is MemberExpression && memberExpression.Type == typeof(DateTime))
+                else
                 {
-                    LambdaExpression lambda = Expression.Lambda(memberExpression);
-                    Delegate fn = lambda.Compile();
-                    ConstantExpression value = Expression.Constant(fn.DynamicInvoke(null), memberExpression.Type);
-
-                    string dbParamName = sqlBuilder.SetSqlParameter(value.Value);
-                    //添加值
-                    parames.Add(dbParamName);
+                    var value = GetExpreesionValue(expression);
+                    sqlParamName = sqlBuilder.SetSqlParameter(value);
                 }
+                parames.Add(sqlParamName);
             }
-
-            sqlBuilder.AppendInsertSql($" ({string.Join(",", columns)}) VALUES ({string.Join(",", parames)});");
-
+            sqlBuilder.AppendInsertSql($"({string.Join(",", columns)}) VALUES ({string.Join(",", parames)})");
             return sqlBuilder;
         }
 

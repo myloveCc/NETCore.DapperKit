@@ -10,7 +10,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
     {
         IInsertQueryAble<T> Insert(Expression<Func<T>> expression);
 
-        IDeleteQueryAble<T> Delete(Expression<Func<T, bool>> expression);
+        IDeleteQueryAble<T> Delete(Expression<Func<T, bool>> expression = null);
 
         IUpdateQueryAble<T> Update(Expression<Func<T>> expression);
 

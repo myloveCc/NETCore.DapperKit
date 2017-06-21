@@ -7,9 +7,9 @@ using System.Text;
 
 namespace NETCore.DapperKit.ExpressionToSql.Query
 {
-    public class IsertQueryAble<T> : BaseSqlQueryAble<T>, IInsertQueryAble<T> where T : class
+    public class InsertQueryAble<T> : BaseSqlQueryAble<T>, IInsertQueryAble<T> where T : class
     {
-        public IsertQueryAble(ISqlBuilder sqlBuilder, IDapperKitProvider provider) : base(sqlBuilder, provider)
+        public InsertQueryAble(ISqlBuilder sqlBuilder, IDapperKitProvider provider) : base(sqlBuilder, provider)
         {
 
         }
