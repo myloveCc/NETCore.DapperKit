@@ -10,12 +10,12 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
 {
     public class BaseCollectionQueryAble<T> : ICollectionQueryAble<T> where T : class
     {
-        public readonly ISqlBuilder _SqlBuilder;
+        public ISqlBuilder SqlBuilder { get; private set; }
         public readonly IDapperKitProvider _DapperKitProvider;
 
         public BaseCollectionQueryAble(ISqlBuilder sqlBuilder, IDapperKitProvider provider)
         {
-            _SqlBuilder = sqlBuilder;
+            SqlBuilder = sqlBuilder;
             _DapperKitProvider = provider;
         }
 

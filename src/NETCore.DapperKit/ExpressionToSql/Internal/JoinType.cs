@@ -6,6 +6,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Internal
 {
     public enum JoinType
     {
+        NONE,
         INNER,
         LEFT,
         RIGHT,

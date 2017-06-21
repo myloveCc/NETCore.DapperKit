@@ -19,6 +19,11 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         void SetSqlCommandType(SqlCommandType type);
 
         /// <summary>
+        /// set select multi table
+        /// </summary>
+        void SetSelectMultiTable();
+
+        /// <summary>
         /// set table alias 
         /// </summary>
         /// <param name="tableName">table name</param>

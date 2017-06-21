@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 {
-    public class SqlVistorProvider
+    internal class SqlVistorProvider
     {
         private static ISqlVisitor GetSqlManager(Expression expression)
         {
@@ -120,74 +120,74 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             throw new NotImplementedException("Unimplemented ExpressionSqlManager");
         }
 
-        public static void Insert(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Insert(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Insert(expression, sqlBuilder);
         }
 
-        public static void Update(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Update(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Update(expression, sqlBuilder);
         }
 
-        public static void Select(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Select(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Select(expression, sqlBuilder);
         }
 
-        public static void Join(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Join(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Join(expression, sqlBuilder);
         }
 
-        public static void Where(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Where(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Where(expression, sqlBuilder);
         }
 
-        public static void In(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void In(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).In(expression, sqlBuilder);
         }
 
-        public static void GroupBy(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void GroupBy(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).GroupBy(expression, sqlBuilder);
         }
 
-        public static void OrderBy(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void OrderBy(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).OrderBy(expression, sqlBuilder);
         }
-        public static void ThenBy(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void ThenBy(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).ThenBy(expression, sqlBuilder);
         }
-        public static void OrderByDescending(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void OrderByDescending(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).OrderByDescending(expression, sqlBuilder);
         }
-        public static void ThenByDescending(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void ThenByDescending(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).ThenByDescending(expression, sqlBuilder);
         }
 
-        public static void Max(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Max(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Max(expression, sqlBuilder);
         }
 
-        public static void Min(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Min(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Min(expression, sqlBuilder);
         }
 
-        public static void Avg(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Avg(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Avg(expression, sqlBuilder);
         }
 
-        public static void Count(Expression expression, ISqlBuilder sqlBuilder)
+        internal static void Count(Expression expression, ISqlBuilder sqlBuilder)
         {
             GetSqlManager(expression).Count(expression, sqlBuilder);
         }

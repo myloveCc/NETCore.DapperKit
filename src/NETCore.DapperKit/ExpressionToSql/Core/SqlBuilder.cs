@@ -26,6 +26,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         private StringBuilder _GroupSqlBuilder;
         private int SkipNum = 0;
         private int TakeNum = 0;
+        private bool _IsSelectMultiTable = false;
         public ISqlFormater _SqlFormater { get; private set; }
 
         /// <summary>
@@ -39,7 +40,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
             _SqlFormater = FormaterFactory.SqlFormater(_DatabaseType);
         }
 
-        #region SqlCommand Type
+        #region Sql
 
         /// <summary>
         /// set sql command type
@@ -48,38 +49,6 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         public void SetSqlCommandType(SqlCommandType type)
         {
             _SqlCommandType = type;
-        }
-
-        #endregion
-
-        #region DbParameter
-
-        /// <summary>
-        /// set sql param
-        /// </summary>
-        /// <param name="paramValue">param value</param>
-        /// <returns></returns>
-
-        public string SetSqlParameter(object paramValue)
-        {
-            if (_SqlParameters == null)
-            {
-                _SqlParameters = new Dictionary<string, object>();
-            }
-            string paramName = "";
-            paramName = _SqlFormater.Prefix + "param" + this._SqlParameters.Count;
-
-            _SqlParameters.Add(paramName, paramValue);
-            return paramName;
-        }
-
-        /// <summary>
-        /// get sql param dictionary
-        /// </summary>
-        /// <returns></returns>
-        public Dictionary<string, object> GetSqlParameters()
-        {
-            return _SqlParameters;
         }
 
         /// <summary>
@@ -122,10 +91,69 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                 return $"{updateSql.TrimEnd()};";
             }
 
-            //TODO
+            if (_SqlCommandType == SqlCommandType.Select)
+            {
+                var selectSql = string.Empty;
+
+                selectSql = $"{_SelectSqlBuilder.ToString()}";
+
+                if (_IsSelectMultiTable && (_JoinSqlBuilder == null || _JoinSqlBuilder.Length == 0))
+                {
+                    throw new Exception("select multi data table must include join sql");
+                }
+
+                selectSql += _JoinSqlBuilder.ToString();
+
+                if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+                {
+                    selectSql += _WhereSqlBuilder.ToString();
+                }
+
+                return $"{selectSql.TrimEnd()};";
+            }
             return string.Empty;
         }
 
+        #endregion
+
+        #region Select multi table
+
+        public void SetSelectMultiTable()
+        {
+            _IsSelectMultiTable = true;
+        }
+
+        #endregion
+
+        #region DbParameter
+
+        /// <summary>
+        /// set sql param
+        /// </summary>
+        /// <param name="paramValue">param value</param>
+        /// <returns></returns>
+
+        public string SetSqlParameter(object paramValue)
+        {
+            if (_SqlParameters == null)
+            {
+                _SqlParameters = new Dictionary<string, object>();
+            }
+            string paramName = "";
+            paramName = _SqlFormater.Prefix + "param" + this._SqlParameters.Count;
+
+            _SqlParameters.Add(paramName, paramValue);
+            return paramName;
+        }
+
+        /// <summary>
+        /// get sql param dictionary
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, object> GetSqlParameters()
+        {
+            return _SqlParameters;
+        }
         #endregion
 
         #region TableAlias
@@ -158,7 +186,6 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
             {
                 _TableNames.Add(tableName, _QueueTableAlias.Dequeue());
             }
-            throw new NotImplementedException();
         }
         #endregion
 

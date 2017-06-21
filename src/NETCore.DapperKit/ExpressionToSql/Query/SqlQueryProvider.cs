@@ -127,57 +127,77 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         private ISelectQueryAble<T> SelectParser(Expression expression, Expression expressionBody, params Type[] types)
         {
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Select);
-            _SqlBuilder.SetTableAlias(_MainTableName);
-            _SqlBuilder.AppendSelectSql("SELECT {0} FROM " + _MainTableName + " " + _SqlBuilder.GetTableAlias(_MainTableName));
+        
+            _SqlBuilder.AppendSelectSql("SELECT ");
 
-            if (expression != null)
+            var selectQueryAble = new SelectQueryAble<T>(_SqlBuilder, _DapperKitProvider);
+
+            if (expression != null && expressionBody != null)
             {
                 foreach (var type in types)
                 {
                     string tableName = type.GetDapperTableName(_SqlBuilder._SqlFormater);
                     _SqlBuilder.SetTableAlias(tableName);
+
+                    //add data table type to collection
+                    selectQueryAble.TableTypeCollections.Add(type);
                 }
 
-                //TODO
+                if (types != null && types.Length > 0)
+                {
+                    _SqlBuilder.SetSelectMultiTable();
+                }
+
+                SqlVistorProvider.Select(expressionBody, _SqlBuilder);
             }
-            return new SelectQueryAble<T>(_SqlBuilder, _DapperKitProvider);
+            _SqlBuilder.SetTableAlias(_MainTableName);
+            _SqlBuilder.AppendSelectSql("FROM " + _MainTableName + " " + _SqlBuilder.GetTableAlias(_MainTableName));
+            return selectQueryAble;
         }
 
         public ICalculateQueryAble<T> Count(Expression<Func<T, object>> expression)
         {
-            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
             Check.Argument.IsNotNull(expression, nameof(expression));
+            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
 
-            throw new NotImplementedException();
+            SqlVistorProvider.Count(expression.Body, _SqlBuilder);
+            return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
         public ICalculateQueryAble<T> Avg(Expression<Func<T, object>> expression)
         {
-            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
             Check.Argument.IsNotNull(expression, nameof(expression));
+            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
 
-            throw new NotImplementedException();
+            SqlVistorProvider.Avg(expression.Body, _SqlBuilder);
+            return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
         public ICalculateQueryAble<T> Max(Expression<Func<T, object>> expression)
         {
-            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
             Check.Argument.IsNotNull(expression, nameof(expression));
-            throw new NotImplementedException();
+            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
+
+            SqlVistorProvider.Max(expression.Body, _SqlBuilder);
+            return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
         public ICalculateQueryAble<T> Min(Expression<Func<T, object>> expression)
         {
-            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
             Check.Argument.IsNotNull(expression, nameof(expression));
-            throw new NotImplementedException();
+            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
+
+            SqlVistorProvider.Min(expression.Body, _SqlBuilder);
+            return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
         public ICalculateQueryAble<T> Sum(Expression<Func<T, object>> expression)
         {
-            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
             Check.Argument.IsNotNull(expression, nameof(expression));
-            throw new NotImplementedException();
+            _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
+
+            SqlVistorProvider.Sum(expression.Body, _SqlBuilder);
+            return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
         /// <summary>
