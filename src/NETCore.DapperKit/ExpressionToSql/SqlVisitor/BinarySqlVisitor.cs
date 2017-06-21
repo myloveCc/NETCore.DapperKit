@@ -233,7 +233,70 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Where(BinaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            var expressionLeft = expression.Left;
+            var expressionRight = expression.Right;
 
+            if (expressionLeft is MemberExpression)
+            {
+                var memberExp = expressionLeft as MemberExpression;
+
+                if (MemberIsDataColumn(memberExp, sqlBuilder))
+                {
+                    SqlVistorProvider.Where(expressionLeft, sqlBuilder);
+                    // m.IsAdmin
+                    if (memberExp.Type == typeof(bool))
+                    {
+                        sqlBuilder.AppendWhereSql($"{OperatorParser(ExpressionType.Equal)}");
+
+                        var isRightHandle = false;
+                        var sqlParamName = string.Empty;
+                        if (expression.Right is ConstantExpression)
+                        {
+                            isRightHandle = true;
+                            var value = Convert.ToBoolean(((ConstantExpression)expressionRight).Value) ? 1 : 0;
+                            sqlParamName = sqlBuilder.SetSqlParameter(value);
+                        }
+                        else
+                        {
+                            sqlParamName = sqlBuilder.SetSqlParameter(1);
+                        }
+
+                        sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+
+                        if (!isRightHandle)
+                        {
+                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
+                            SqlVistorProvider.Where(expressionRight, sqlBuilder);
+                        }
+                    }
+                    else
+                    {
+                        //m.DateTime==null or m.DateTime!=null
+                        if (expressionRight is ConstantExpression && ((ConstantExpression)expression.Right).Value == null)
+                        {
+                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType, true)}");
+                        }
+                        else
+                        {
+                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
+                        }
+                        SqlVistorProvider.Where(expressionRight, sqlBuilder);
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
+                }
+            }
+            else
+            {
+                SqlVistorProvider.Where(expressionLeft, sqlBuilder);
+
+                sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
+
+                SqlVistorProvider.Where(expressionRight, sqlBuilder);
+
+            }
 
             return sqlBuilder;
         }

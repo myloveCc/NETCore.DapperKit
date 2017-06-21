@@ -10,15 +10,15 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
     {
         protected override ISqlBuilder Join(ConstantExpression expression, ISqlBuilder sqlBuilder)
         {
-            var dbParamName = sqlBuilder.SetSqlParameter(expression.Value);
-            sqlBuilder.AppendJoinSql($" {dbParamName}");
+            var sqlParamName = sqlBuilder.SetSqlParameter(expression.Value);
+            sqlBuilder.AppendJoinSql($"{sqlParamName} ");
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Where(ConstantExpression expression, ISqlBuilder sqlBuilder)
         {
-            var dbParamName = sqlBuilder.SetSqlParameter(expression.Value);
-            sqlBuilder.AppendWhereSql($" {dbParamName}");
+            var sqlParamName = sqlBuilder.SetSqlParameter(expression.Value);
+            sqlBuilder.AppendWhereSql($"{sqlParamName} ");
             return sqlBuilder;
         }
 

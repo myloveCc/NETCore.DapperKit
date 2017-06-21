@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
 using NETCore.DapperKit.ExpressionToSql.Core;
+using NETCore.DapperKit.ExpressionToSql.SqlVisitor;
+using NETCore.DapperKit.Shared;
 
 namespace NETCore.DapperKit.ExpressionToSql.Query
 {
@@ -17,7 +19,10 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
 
         public IUpdateQueryAble<T> Where(Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
+            Check.Argument.IsNotNull(expression, nameof(expression));
+
+            SqlVistorProvider.Where(expression.Body, SqlBuilder);
+            return this;
         }
     }
 }

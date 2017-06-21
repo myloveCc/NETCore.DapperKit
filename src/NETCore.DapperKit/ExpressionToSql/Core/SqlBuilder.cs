@@ -107,6 +107,21 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
 
                 return $"{deleteSql.TrimEnd()};";
             }
+
+            if (_SqlCommandType == SqlCommandType.Update)
+            {
+                var updateSql = string.Empty;
+
+                updateSql = $"{_UpdateSqlBuilder.ToString()}";
+
+                if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+                {
+                    updateSql += _WhereSqlBuilder.ToString();
+                }
+
+                return $"{updateSql.TrimEnd()};";
+            }
+
             //TODO
             return string.Empty;
         }

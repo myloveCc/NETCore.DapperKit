@@ -68,6 +68,8 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Update);
             _SqlBuilder.AppendUpdateSql($"UPDATE {_MainTableName} SET ");
 
+            SqlVistorProvider.Update(expression.Body, _SqlBuilder);
+
             return new UpdateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 

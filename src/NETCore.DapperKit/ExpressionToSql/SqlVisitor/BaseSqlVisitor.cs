@@ -164,7 +164,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             var memberExpression = expression as MemberExpression;
             PropertyInfo property = memberExpression.Member as PropertyInfo;
             var type = memberExpression.Expression.Type;
-            if (property.IsDataColumn(type))
+            if (property.IsDataConlumnProperty(type))
             {
                 return true;
             }
@@ -176,10 +176,32 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected object GetExpreesionValue(Expression expression)
         {
-            LambdaExpression lambda = Expression.Lambda(expression);
-            Delegate fn = lambda.Compile();
-            ConstantExpression constantExp = Expression.Constant(fn.DynamicInvoke(null), expression.Type);
-            return constantExp.Value;
+            object value = null;
+            if (expression is ConstantExpression)
+            {
+                ConstantExpression constranExp = expression as ConstantExpression;
+                //bool
+                value = constranExp.Value;
+                if (constranExp.Type == typeof(bool))
+                {
+                    if (Convert.ToBoolean(value))
+                    {
+                        value = 1;
+                    }
+                    else
+                    {
+                        value = 0;
+                    }
+                }
+            }
+            else
+            {
+                LambdaExpression lambda = Expression.Lambda(expression);
+                Delegate fn = lambda.Compile();
+                ConstantExpression constantExp = Expression.Constant(fn.DynamicInvoke(null), expression.Type);
+                value = constantExp.Value;
+            }
+            return value;
         }
     }
 }

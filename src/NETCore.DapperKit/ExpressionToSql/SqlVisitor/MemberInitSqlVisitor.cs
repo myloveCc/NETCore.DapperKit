@@ -20,12 +20,12 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             {
                 var property = memberAss.Member as PropertyInfo;
 
-                if (property.IsIdentity(expression.Type))
+                if (property.IsKeyProperty(expression.Type))
                 {
                     continue;
                 }
 
-                if (!property.IsDataColumn(expression.Type))
+                if (!property.IsDataConlumnProperty(expression.Type))
                 {
                     continue;
                 }
@@ -33,31 +33,11 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 columns.Add($"{sqlBuilder._SqlFormater.Left}{property.Name}{sqlBuilder._SqlFormater.Right}");
 
                 string sqlParamName = string.Empty;
-                var memberExpression = memberAss.Expression;
-                if (memberExpression is ConstantExpression)
-                {
-                    ConstantExpression c = memberExpression as ConstantExpression;
+                var memeberExp = memberAss.Expression;
 
-                    //bool
-                    var value = c.Value;
-                    if (c.Type == typeof(bool))
-                    {
-                        if (Convert.ToBoolean(value))
-                        {
-                            value = 1;
-                        }
-                        else
-                        {
-                            value = 0;
-                        }
-                    }
-                    sqlParamName = sqlBuilder.SetSqlParameter(value);
-                }
-                else
-                {
-                    var value = GetExpreesionValue(expression);
-                    sqlParamName = sqlBuilder.SetSqlParameter(value);
-                }
+                var value = GetExpreesionValue(memeberExp);
+                sqlParamName = sqlBuilder.SetSqlParameter(value);
+
                 parames.Add(sqlParamName);
             }
             sqlBuilder.AppendInsertSql($"({string.Join(",", columns)}) VALUES ({string.Join(",", parames)})");
@@ -66,10 +46,33 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Update(MemberInitExpression expression, ISqlBuilder sqlBuilder)
         {
+            var updates = new List<string>();
+
             foreach (MemberAssignment memberAss in expression.Bindings)
             {
+                var memberExp = memberAss.Expression;
+                var property = memberAss.Member as PropertyInfo;
 
+                if (property.IsKeyProperty(expression.Type))
+                {
+                    continue;
+                }
+                if (!property.IsDataConlumnProperty(expression.Type))
+                {
+                    continue;
+                }
+
+                MemberInfo member = memberAss.Member;
+
+
+                var columnName = $"{sqlBuilder._SqlFormater.Left}{member.Name}{sqlBuilder._SqlFormater.Right}";
+                var value = GetExpreesionValue(memberExp);
+                string sqlParamName = sqlBuilder.SetSqlParameter(value);
+                updates.Add($"{columnName} = {sqlParamName}");
             }
+
+            sqlBuilder.AppendUpdateSql($"{string.Join(",", updates)} ");
+
             return sqlBuilder;
         }
 

@@ -310,7 +310,7 @@ namespace NETCore.DapperKit.Extensions
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        internal static List<PropertyInfo> GetCloumnProperties(this Type type)
+        internal static List<PropertyInfo> GetDataCloumnProperties(this Type type)
         {
             return TypePropertiesCache(type);
         }
@@ -321,7 +321,7 @@ namespace NETCore.DapperKit.Extensions
         /// <param name="info"><see cref="PropertyInfo"/></param>
         /// <param name="type"><see cref="Type"/></param>
         /// <returns></returns>
-        internal static bool IsIdentity(this PropertyInfo info, Type type)
+        internal static bool IsKeyProperty(this PropertyInfo info, Type type)
         {
             bool result = false;
             var identityProperties = KeyPropertiesCache(type);
@@ -339,7 +339,7 @@ namespace NETCore.DapperKit.Extensions
         /// <param name="info"><see cref="PropertyInfo"/></param>
         /// <param name="type"><see cref="Type"/></param>
         /// <returns></returns>
-        internal static bool IsDataColumn(this PropertyInfo info, Type type)
+        internal static bool IsDataConlumnProperty(this PropertyInfo info, Type type)
         {
             bool result = false;
             var allProperties = TypePropertiesCache(type);

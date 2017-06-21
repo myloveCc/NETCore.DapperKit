@@ -31,11 +31,11 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             List<string> parames = new List<string>();
 
             object entity = GetValue(expression);
-            var properties = expression.Type.GetCloumnProperties();
+            var properties = expression.Type.GetDataCloumnProperties();
 
             foreach (var propertyInfo in properties)
             {
-                if (propertyInfo.IsIdentity(expression.Type))
+                if (propertyInfo.IsKeyProperty(expression.Type))
                 {
                     continue;
                 }
@@ -80,7 +80,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Where(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-
+            sqlBuilder.AppendWhereSql($"{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right} ");
             return sqlBuilder;
         }
 
