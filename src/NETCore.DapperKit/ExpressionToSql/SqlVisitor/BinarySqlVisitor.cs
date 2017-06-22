@@ -223,10 +223,99 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             return true;
         }
 
-
         protected override ISqlBuilder Join(BinaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            var expressionLeft = expression.Left;
+            var expressionRight = expression.Right;
 
+            if (expressionLeft is MemberExpression)
+            {
+                var memberExp = expressionLeft as MemberExpression;
+                if (!MemberIsDataColumn(memberExp, sqlBuilder))
+                    throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
+            }
+            if (expressionRight is MemberExpression)
+            {
+                var memberExp = expressionRight as MemberExpression;
+                if (!MemberIsDataColumn(memberExp, sqlBuilder))
+                    throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
+            }
+
+            var isRightHandle = false;
+
+            if (IsNeedsParentheses(expression, expressionLeft))
+            {
+                sqlBuilder.AppendJoinSql("( ");
+            }
+
+            if (expressionLeft is MemberExpression && expressionLeft.Type == typeof(bool) && expressionLeft.NodeType == ExpressionType.MemberAccess && (expression.NodeType == ExpressionType.AndAlso || expressionRight is ConstantExpression))
+            {
+                SqlVistorProvider.Join(expressionLeft, sqlBuilder);
+
+                sqlBuilder.AppendJoinSql($"{OperatorParser(ExpressionType.Equal)}");
+
+                var sqlParamName = string.Empty;
+                if (expressionRight is ConstantExpression)
+                {
+                    isRightHandle = true;
+                    var value = Convert.ToBoolean(((ConstantExpression)expressionRight).Value) ? 1 : 0;
+                    sqlParamName = sqlBuilder.SetSqlParameter(value);
+                }
+                else
+                {
+                    sqlParamName = sqlBuilder.SetSqlParameter(1);
+                }
+
+                sqlBuilder.AppendJoinSql($"{sqlParamName} ");
+            }
+            else
+            {
+                SqlVistorProvider.Join(expression.Left, sqlBuilder);
+            }
+
+            if (IsNeedsParentheses(expression, expressionLeft))
+            {
+                sqlBuilder.AppendJoinSql(") ");
+            }
+
+            if (!isRightHandle)
+            {
+                var whereOperator = string.Empty;
+                if ((expressionRight is ConstantExpression) && ((ConstantExpression)expressionRight).Value == null)
+                {
+                    whereOperator = OperatorParser(expression.NodeType, true);
+                }
+                else
+                {
+                    whereOperator = OperatorParser(expression.NodeType);
+                }
+                sqlBuilder.AppendJoinSql($"{whereOperator}");
+
+                if (IsNeedsParentheses(expression, expressionRight))
+                {
+                    sqlBuilder.AppendJoinSql("( ");
+                }
+
+                if (expressionRight is MemberExpression && expressionRight.Type == typeof(bool) && expressionRight.NodeType == ExpressionType.MemberAccess && expression.NodeType == ExpressionType.AndAlso)
+                {
+                    //（m=>m.IsAdmin) 
+                    SqlVistorProvider.Join(expressionRight, sqlBuilder);
+
+                    sqlBuilder.AppendJoinSql($"{OperatorParser(ExpressionType.Equal)}");
+
+                    var sqlParamName = sqlBuilder.SetSqlParameter(1);
+                    sqlBuilder.AppendJoinSql($"{sqlParamName} ");
+                }
+                else
+                {
+                    SqlVistorProvider.Join(expression.Right, sqlBuilder);
+                }
+
+                if (IsNeedsParentheses(expression, expressionRight))
+                {
+                    sqlBuilder.AppendWhereSql(") ");
+                }
+            }
 
             return sqlBuilder;
         }
@@ -239,63 +328,90 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             if (expressionLeft is MemberExpression)
             {
                 var memberExp = expressionLeft as MemberExpression;
-
-                if (MemberIsDataColumn(memberExp, sqlBuilder))
-                {
-                    SqlVistorProvider.Where(expressionLeft, sqlBuilder);
-                    // m.IsAdmin
-                    if (memberExp.Type == typeof(bool))
-                    {
-                        sqlBuilder.AppendWhereSql($"{OperatorParser(ExpressionType.Equal)}");
-
-                        var isRightHandle = false;
-                        var sqlParamName = string.Empty;
-                        if (expression.Right is ConstantExpression)
-                        {
-                            isRightHandle = true;
-                            var value = Convert.ToBoolean(((ConstantExpression)expressionRight).Value) ? 1 : 0;
-                            sqlParamName = sqlBuilder.SetSqlParameter(value);
-                        }
-                        else
-                        {
-                            sqlParamName = sqlBuilder.SetSqlParameter(1);
-                        }
-
-                        sqlBuilder.AppendWhereSql($"{sqlParamName} ");
-
-                        if (!isRightHandle)
-                        {
-                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
-                            SqlVistorProvider.Where(expressionRight, sqlBuilder);
-                        }
-                    }
-                    else
-                    {
-                        //m.DateTime==null or m.DateTime!=null
-                        if (expressionRight is ConstantExpression && ((ConstantExpression)expression.Right).Value == null)
-                        {
-                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType, true)}");
-                        }
-                        else
-                        {
-                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
-                        }
-                        SqlVistorProvider.Where(expressionRight, sqlBuilder);
-                    }
-                }
-                else
-                {
+                if (!MemberIsDataColumn(memberExp, sqlBuilder))
                     throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
-                }
             }
-            else
+            if (expressionRight is MemberExpression)
+            {
+                var memberExp = expressionRight as MemberExpression;
+                if (!MemberIsDataColumn(memberExp, sqlBuilder))
+                    throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
+            }
+
+            var isRightHandle = false;
+
+            if (IsNeedsParentheses(expression, expressionLeft))
+            {
+                sqlBuilder.AppendWhereSql("( ");
+            }
+
+            if (expressionLeft is MemberExpression && expressionLeft.Type == typeof(bool) && expressionLeft.NodeType == ExpressionType.MemberAccess && (expression.NodeType == ExpressionType.AndAlso || expressionRight is ConstantExpression))
             {
                 SqlVistorProvider.Where(expressionLeft, sqlBuilder);
 
-                sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
+                sqlBuilder.AppendWhereSql($"{OperatorParser(ExpressionType.Equal)}");
 
-                SqlVistorProvider.Where(expressionRight, sqlBuilder);
+                var sqlParamName = string.Empty;
+                if (expressionRight is ConstantExpression)
+                {
+                    isRightHandle = true;
+                    var value = Convert.ToBoolean(((ConstantExpression)expressionRight).Value) ? 1 : 0;
+                    sqlParamName = sqlBuilder.SetSqlParameter(value);
+                }
+                else
+                {
+                    sqlParamName = sqlBuilder.SetSqlParameter(1);
+                }
 
+                sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+            }
+            else
+            {
+                SqlVistorProvider.Where(expression.Left, sqlBuilder);
+            }
+
+            if (IsNeedsParentheses(expression, expressionLeft))
+            {
+                sqlBuilder.AppendWhereSql(") ");
+            }
+
+            if (!isRightHandle)
+            {
+                var whereOperator = string.Empty;
+                if ((expressionRight is ConstantExpression) && ((ConstantExpression)expressionRight).Value == null)
+                {
+                    whereOperator = OperatorParser(expression.NodeType, true);
+                }
+                else
+                {
+                    whereOperator = OperatorParser(expression.NodeType);
+                }
+                sqlBuilder.AppendWhereSql($"{whereOperator}");
+
+                if (IsNeedsParentheses(expression, expressionRight))
+                {
+                    sqlBuilder.AppendWhereSql("( ");
+                }
+
+                if (expressionRight is MemberExpression && expressionRight.Type == typeof(bool) && expressionRight.NodeType == ExpressionType.MemberAccess && expression.NodeType == ExpressionType.AndAlso)
+                {
+                    //（m=>m.IsAdmin) 
+                    SqlVistorProvider.Where(expressionRight, sqlBuilder);
+
+                    sqlBuilder.AppendWhereSql($"{OperatorParser(ExpressionType.Equal)}");
+
+                    var sqlParamName = sqlBuilder.SetSqlParameter(1);
+                    sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+                }
+                else
+                {
+                    SqlVistorProvider.Where(expression.Right, sqlBuilder);
+                }
+
+                if (IsNeedsParentheses(expression, expressionRight))
+                {
+                    sqlBuilder.AppendWhereSql(") ");
+                }
             }
 
             return sqlBuilder;
@@ -309,63 +425,91 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             if (expressionLeft is MemberExpression)
             {
                 var memberExp = expressionLeft as MemberExpression;
+                if (!MemberIsDataColumn(memberExp, sqlBuilder))
+                    throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
+            }
+            if (expressionRight is MemberExpression)
+            {
+                var memberExp = expressionRight as MemberExpression;
+                if (!MemberIsDataColumn(memberExp, sqlBuilder))
+                    throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
+            }
 
-                if (MemberIsDataColumn(memberExp, sqlBuilder))
+            var isRightHandle = false;
+
+            if (IsNeedsParentheses(expression, expressionLeft))
+            {
+                sqlBuilder.AppendWhereSql("( ");
+            }
+
+            if (expressionLeft is MemberExpression && expressionLeft.Type == typeof(bool) && expressionLeft.NodeType == ExpressionType.MemberAccess && (expression.NodeType == ExpressionType.AndAlso || expressionRight is ConstantExpression))
+            {
+                SqlVistorProvider.Where(expressionLeft, sqlBuilder);
+                sqlBuilder.AppendWhereSql($"{OperatorParser(ExpressionType.Equal)}");
+
+                var sqlParamName = string.Empty;
+                //（m=>m.IsAdmin==true) 
+                if (expressionRight is ConstantExpression)
                 {
-                    SqlVistorProvider.Delete(expressionLeft, sqlBuilder);
-                    // m.IsAdmin
-                    if (memberExp.Type == typeof(bool))
-                    {
-                        sqlBuilder.AppendWhereSql($"{OperatorParser(ExpressionType.Equal)}");
-
-                        var isRightHandle = false;
-                        var sqlParamName = string.Empty;
-                        if (expression.Right is ConstantExpression)
-                        {
-                            isRightHandle = true;
-                            var value = Convert.ToBoolean(((ConstantExpression)expressionRight).Value) ? 1 : 0;
-                            sqlParamName = sqlBuilder.SetSqlParameter(value);
-                        }
-                        else
-                        {
-                            sqlParamName = sqlBuilder.SetSqlParameter(1);
-                        }
-
-                        sqlBuilder.AppendWhereSql($"{sqlParamName} ");
-
-                        if (!isRightHandle)
-                        {
-                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
-                            SqlVistorProvider.Delete(expressionRight, sqlBuilder);
-                        }
-                    }
-                    else
-                    {
-                        //m.DateTime==null or m.DateTime!=null
-                        if (expressionRight is ConstantExpression && ((ConstantExpression)expression.Right).Value == null)
-                        {
-                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType, true)}");
-                        }
-                        else
-                        {
-                            sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
-                        }
-                        SqlVistorProvider.Delete(expressionRight, sqlBuilder);
-                    }
+                    isRightHandle = true;
+                    var value = Convert.ToBoolean(((ConstantExpression)expressionRight).Value) ? 1 : 0;
+                    sqlParamName = sqlBuilder.SetSqlParameter(value);
                 }
                 else
-                {
-                    throw new NotImplementedException($"{memberExp.Member.Name} is not data column");
+                {  
+                    //（m=>m.IsAdmin) 
+                    sqlParamName = sqlBuilder.SetSqlParameter(1);
                 }
+
+                sqlBuilder.AppendWhereSql($"{sqlParamName} ");
             }
             else
             {
-                SqlVistorProvider.Delete(expressionLeft, sqlBuilder);
+                SqlVistorProvider.Delete(expression.Left, sqlBuilder);
+            }
 
-                sqlBuilder.AppendWhereSql($"{OperatorParser(expression.NodeType)}");
+            if (IsNeedsParentheses(expression, expressionLeft))
+            {
+                sqlBuilder.AppendWhereSql(") ");
+            }
 
-                SqlVistorProvider.Delete(expressionRight, sqlBuilder);
+            if (!isRightHandle)
+            {
+                var whereOperator = string.Empty;
+                if ((expressionRight is ConstantExpression) && ((ConstantExpression)expressionRight).Value == null)
+                {
+                    whereOperator = OperatorParser(expression.NodeType, true);
+                }
+                else
+                {
+                    whereOperator = OperatorParser(expression.NodeType);
+                }
+                sqlBuilder.AppendWhereSql($"{whereOperator}");
 
+                if (IsNeedsParentheses(expression, expressionRight))
+                {
+                    sqlBuilder.AppendWhereSql("( ");
+                }
+
+                if (expressionRight is MemberExpression && expressionRight.Type == typeof(bool) && expressionRight.NodeType == ExpressionType.MemberAccess && expression.NodeType == ExpressionType.AndAlso)
+                {
+                    //（m=>m.IsAdmin) 
+                    SqlVistorProvider.Where(expressionRight, sqlBuilder);
+
+                    sqlBuilder.AppendWhereSql($"{OperatorParser(ExpressionType.Equal)}");
+
+                    var sqlParamName = sqlBuilder.SetSqlParameter(1);
+                    sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+                }
+                else
+                {
+                    SqlVistorProvider.Delete(expression.Right, sqlBuilder);
+                }
+
+                if (IsNeedsParentheses(expression, expressionRight))
+                {
+                    sqlBuilder.AppendWhereSql(") ");
+                }
             }
 
             return sqlBuilder;

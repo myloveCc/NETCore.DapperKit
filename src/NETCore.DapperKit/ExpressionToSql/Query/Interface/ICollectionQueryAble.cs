@@ -10,6 +10,8 @@ namespace NETCore.DapperKit.ExpressionToSql.Query.Interface
     {
         ISqlBuilder SqlBuilder { get; }
 
+        IDapperKitProvider DapperKitProvider { get; }
+
         TResult FirstOrDefault<TResult>();
 
         Task<TResult> FirstOrDefaultAsync<TResult>();

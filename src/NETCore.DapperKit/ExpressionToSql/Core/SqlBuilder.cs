@@ -102,7 +102,10 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                     throw new Exception("select multi data table must include join sql");
                 }
 
-                selectSql += _JoinSqlBuilder.ToString();
+                if (_JoinSqlBuilder != null && _JoinSqlBuilder.Length > 0)
+                {
+                    selectSql += _JoinSqlBuilder.ToString();
+                }
 
                 if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
                 {
@@ -164,9 +167,14 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// <param name="tableName">table name</param>
         public string GetTableAlias(string tableName)
         {
-            if (this._TableNames.Keys.Contains(tableName))
+            if (_TableNames == null)
             {
-                return this._TableNames[tableName];
+                return "";
+            }
+
+            if (_TableNames.Keys.Contains(tableName))
+            {
+                return _TableNames[tableName];
             }
             return "";
         }
@@ -339,6 +347,24 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                 }
                 _GroupSqlBuilder.Append(sql);
             }
+        }
+
+        /// <summary>
+        /// set skip num
+        /// </summary>
+        /// <param name="skipNum"></param>
+        public void Skip(int skipNum)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// set take num
+        /// </summary>
+        /// <param name="takeNum"></param>
+        public void Take(int takeNum)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

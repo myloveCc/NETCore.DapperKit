@@ -127,31 +127,35 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         private ISelectQueryAble<T> SelectParser(Expression expression, Expression expressionBody, params Type[] types)
         {
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Select);
-        
             _SqlBuilder.AppendSelectSql("SELECT ");
+            _SqlBuilder.SetTableAlias(_MainTableName);
 
             var selectQueryAble = new SelectQueryAble<T>(_SqlBuilder, _DapperKitProvider);
 
             if (expression != null && expressionBody != null)
             {
-                foreach (var type in types)
-                {
-                    string tableName = type.GetDapperTableName(_SqlBuilder._SqlFormater);
-                    _SqlBuilder.SetTableAlias(tableName);
-
-                    //add data table type to collection
-                    selectQueryAble.TableTypeCollections.Add(type);
-                }
-
                 if (types != null && types.Length > 0)
                 {
                     _SqlBuilder.SetSelectMultiTable();
-                }
 
+                    foreach (var type in types)
+                    {
+                        string tableName = type.GetDapperTableName(_SqlBuilder._SqlFormater);
+                        _SqlBuilder.SetTableAlias(tableName);
+
+                        //add data table type to collection
+                        selectQueryAble.TableTypeCollections.Add(type);
+                    }
+                }
+                
                 SqlVistorProvider.Select(expressionBody, _SqlBuilder);
             }
+            else
+            {
+                _SqlBuilder.AppendSelectSql("* ");
+            }
             _SqlBuilder.SetTableAlias(_MainTableName);
-            _SqlBuilder.AppendSelectSql("FROM " + _MainTableName + " " + _SqlBuilder.GetTableAlias(_MainTableName));
+            _SqlBuilder.AppendSelectSql($"FROM {_MainTableName} {_SqlBuilder.GetTableAlias(_MainTableName)} ");
             return selectQueryAble;
         }
 
@@ -205,9 +209,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         /// </summary>
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
-
-
     }
 }

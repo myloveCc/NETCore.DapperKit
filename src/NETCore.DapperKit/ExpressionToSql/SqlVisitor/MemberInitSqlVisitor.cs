@@ -64,6 +64,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
                 MemberInfo member = memberAss.Member;
 
+                //var tablAliax = GetTableAlias(memberExp, sqlBuilder);
 
                 var columnName = $"{sqlBuilder._SqlFormater.Left}{member.Name}{sqlBuilder._SqlFormater.Right}";
                 var value = GetExpreesionValue(memberExp);
@@ -78,10 +79,34 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Select(MemberInitExpression expression, ISqlBuilder sqlBuilder)
         {
+            var selects = new List<string>();
             foreach (MemberAssignment memberAss in expression.Bindings)
             {
+                var property = memberAss.Member as PropertyInfo;
+                if (!property.IsDataConlumnProperty(expression.Type))
+                {
+                    continue;
+                }
 
+                var memberExp = memberAss.Expression as MemberExpression;
+                var tablAlias = GetTableAlias(memberExp, sqlBuilder);
+                var columnName = $"{tablAlias}{sqlBuilder._SqlFormater.Left}{memberExp.Member.Name}{sqlBuilder._SqlFormater.Right}";
+
+                MemberInfo member = memberAss.Member;
+                var filedName = $"{sqlBuilder._SqlFormater.Left}{member.Name}{sqlBuilder._SqlFormater.Right}";
+
+                selects.Add($"{columnName} {filedName}");
             }
+
+            if (!selects.Any())
+            {
+                sqlBuilder.AppendSelectSql("* ");
+            }
+            else
+            {
+                sqlBuilder.AppendSelectSql($"{string.Join(",", selects)} ");
+            }
+
             return sqlBuilder;
         }
     }

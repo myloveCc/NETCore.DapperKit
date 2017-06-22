@@ -28,26 +28,17 @@ namespace NETCore.DapperKit.ExpressionToSql.Query.Interface
 
         ISelectQueryAble<T> RightJoin<T2, T3>(Expression<Func<T2, T3, bool>> expression);
 
-
         ISelectQueryAble<T> FullJoin<T2>(Expression<Func<T, T2, bool>> expression);
 
         ISelectQueryAble<T> FullJoin<T2, T3>(Expression<Func<T2, T3, bool>> expression);
 
         ISelectQueryAble<T> Where(Expression<Func<T, bool>> expression);
 
-        ISelectQueryAble<T> OrderBy(Expression<Func<T, object>> expression);
+        IOrderQueryAble<T> OrderBy(Expression<Func<T, object>> expression);
 
-        ISelectQueryAble<T> OrderByDescending(Expression<Func<T, object>> expression);
-
-        ISelectQueryAble<T> ThenBy(Expression<Func<T, object>> expression);
-
-        ISelectQueryAble<T> ThenByDescending(Expression<Func<T, object>> expression);
+        IOrderQueryAble<T> OrderByDescending(Expression<Func<T, object>> expression);
 
         ISelectQueryAble<T> GroupBy(Expression<Func<T, object>> expression);
-
-        ISelectQueryAble<T> Skip(int skipNum);
-
-        ISelectQueryAble<T> Take(int takeNum);
 
     }
 }

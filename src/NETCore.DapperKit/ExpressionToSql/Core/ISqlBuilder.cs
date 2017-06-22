@@ -29,6 +29,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// <param name="tableName">table name</param>
         void SetTableAlias(string tableName);
 
+
         /// <summary>
         /// get table alias
         /// </summary>
@@ -109,6 +110,18 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// </summary>
         /// <param name="sql"></param>
         void AppendGroupSql(string sql);
+
+        /// <summary>
+        /// set skip num
+        /// </summary>
+        /// <param name="skipNum"></param>
+        void Skip(int skipNum);
+
+        /// <summary>
+        /// set take num
+        /// </summary>
+        /// <param name="takeNum"></param>
+        void Take(int takeNum);
 
     }
 }

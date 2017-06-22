@@ -35,7 +35,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
                     if (!TableTypeCollections.Contains(type))
                     {
                         var tableName = types[types.Length - 1].GetDapperTableName(SqlBuilder._SqlFormater);
-                        throw new Exception($"select query data tables can not find {tableName}");
+                        throw new Exception($"select query tables can not found {tableName}");
                     }
                 }
 
@@ -47,6 +47,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
 
                 var joinTableName = types[types.Length - 1].GetDapperTableName(SqlBuilder._SqlFormater);
                 var joinTableAlias = SqlBuilder.GetTableAlias(joinTableName);
+
 
                 SqlBuilder.AppendJoinSql($"{joinStr} JOIN {(joinTableName + " " + joinTableAlias)} ON ");
 
@@ -132,44 +133,18 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             return this;
         }
 
-        public ISelectQueryAble<T> OrderBy(Expression<Func<T, object>> expression)
+        public IOrderQueryAble<T> OrderBy(Expression<Func<T, object>> expression)
         {
             Check.Argument.IsNotNull(expression, nameof(expression));
             SqlVistorProvider.OrderBy(expression.Body, SqlBuilder);
-            return this;
+            return new OrderQueryAble<T>(SqlBuilder, DapperKitProvider);
         }
 
-        public ISelectQueryAble<T> OrderByDescending(Expression<Func<T, object>> expression)
+        public IOrderQueryAble<T> OrderByDescending(Expression<Func<T, object>> expression)
         {
             Check.Argument.IsNotNull(expression, nameof(expression));
             SqlVistorProvider.OrderByDescending(expression.Body, SqlBuilder);
-            return this;
-        }
-
-        public ISelectQueryAble<T> ThenBy(Expression<Func<T, object>> expression)
-        {
-            Check.Argument.IsNotNull(expression, nameof(expression));
-            SqlVistorProvider.ThenBy(expression.Body, SqlBuilder);
-            return this;
-        }
-
-        public ISelectQueryAble<T> ThenByDescending(Expression<Func<T, object>> expression)
-        {
-            Check.Argument.IsNotNull(expression, nameof(expression));
-            SqlVistorProvider.ThenByDescending(expression.Body, SqlBuilder);
-            return this;
-        }
-
-        public ISelectQueryAble<T> Skip(int skipNum)
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
-
-        public ISelectQueryAble<T> Take(int takeNum)
-        {
-            //TODO
-            throw new NotImplementedException();
+            return new OrderQueryAble<T>(SqlBuilder, DapperKitProvider);
         }
     }
 }

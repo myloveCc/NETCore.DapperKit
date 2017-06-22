@@ -203,5 +203,17 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             }
             return value;
         }
+
+        protected string GetTableAlias(MemberExpression expression, ISqlBuilder sqlBuilder)
+        {
+            var tableName = expression.Member.DeclaringType.GetDapperTableName(sqlBuilder._SqlFormater);
+            var tableAlias = sqlBuilder.GetTableAlias(tableName);
+            if (!string.IsNullOrEmpty(tableAlias))
+            {
+                tableAlias = $"{tableAlias}.";
+            }
+
+            return tableAlias;
+        }
     }
 }

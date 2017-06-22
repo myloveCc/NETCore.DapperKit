@@ -69,18 +69,35 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Select(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
+
+            PropertyInfo propertyInfo = expression.Member as PropertyInfo;
+            if (!propertyInfo.IsDataConlumnProperty(expression.Member.DeclaringType))
+            {
+                throw new Exception($"{ expression.Member.Name } is not data column");
+            }
+
+            var tableAlias = GetTableAlias(expression, sqlBuilder);
+            //get table column name
+            var columnName = $"{tableAlias}{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right}";
+            //get data column name
+            var fieldName = $"{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right}";
+
+            sqlBuilder.AppendSelectSql($"{columnName} {fieldName} ");
+
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Join(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-
+            var tableAlias = GetTableAlias(expression, sqlBuilder);
+            sqlBuilder.AppendJoinSql($"{tableAlias}{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right} ");
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Where(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-            sqlBuilder.AppendWhereSql($"{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right} ");
+            var tableAlias = GetTableAlias(expression, sqlBuilder);
+            sqlBuilder.AppendWhereSql($"{tableAlias}{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right} ");
             return sqlBuilder;
         }
 
