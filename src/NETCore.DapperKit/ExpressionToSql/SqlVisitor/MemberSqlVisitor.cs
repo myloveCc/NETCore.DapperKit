@@ -5,6 +5,8 @@ using System.Text;
 using System.Reflection;
 using NETCore.DapperKit.ExpressionToSql.Core;
 using NETCore.DapperKit.Extensions;
+using System.Collections;
+using System.Linq;
 
 namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 {
@@ -103,6 +105,33 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder In(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
+            var field = expression.Member as FieldInfo;
+            if (field != null)
+            {
+                object val = field.GetValue(((ConstantExpression)expression.Expression).Value);
+
+                if (val != null)
+                {
+                    var ins = new List<string>();
+                    IEnumerable array = val as IEnumerable;
+                    foreach (var item in array)
+                    {
+                        if (field.FieldType.Name == "String[]" || field.FieldType == typeof(List<string>))
+                        {
+                            ins.Add($"'{item}'");
+                        }
+                        else
+                        {
+                            ins.Add($"{item}");
+                        }
+                    }
+
+                    if (ins.Any())
+                    {
+                        sqlBuilder.AppendWhereSql($"({string.Join(",", ins)})");
+                    }
+                }
+            }
             return sqlBuilder;
         }
 

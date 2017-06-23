@@ -22,13 +22,6 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             return sqlBuilder;
         }
 
-        protected override ISqlBuilder In(ConstantExpression expression, ISqlBuilder sqlBuilder)
-        {
-            //TODO
-
-            return sqlBuilder;
-        }
-
         protected override ISqlBuilder Delete(ConstantExpression expression, ISqlBuilder sqlBuilder)
         {
             var sqlParamName = sqlBuilder.SetSqlParameter(expression.Value);

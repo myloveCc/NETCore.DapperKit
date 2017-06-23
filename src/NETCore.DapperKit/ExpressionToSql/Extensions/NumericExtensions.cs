@@ -14,66 +14,60 @@ namespace NETCore.DapperKit.ExpressionToSql.Extensions
             typeof(uint), typeof(float)
         };
 
-        private static bool IsNumeric(Type myType)
+        private static bool IsNumeric(Type type)
         {
-            return NumericTypes.Contains(Nullable.GetUnderlyingType(myType) ?? myType);
+            return NumericTypes.Contains(Nullable.GetUnderlyingType(type) ?? type);
+        }
+
+        private static T CheckObjType<T>(T obj)
+        {
+            var type = typeof(T);
+            if (!IsNumeric(type))
+            {
+                throw new Exception($"{nameof(T)} is not a numeric type");
+            }
+
+            return default(T);
         }
 
         /// <summary>
         /// MAX(column_name)
         /// </summary>
-        public static bool Max<T>(this T obj) where T : IComparable, IComparable<T>
+        public static T Max<T>(this T obj) where T : IComparable, IComparable<T>
         {
-            var type = typeof(T);
-
-            if (IsNumeric(type))
-            {
-                return true;
-            }
-            throw new Exception($"{nameof(T)} is not a numeric type");
+            return CheckObjType(obj);
         }
 
         /// <summary>
         /// Min(column_name)
         /// </summary>
-        public static bool Min<T>(this T obj) where T : IComparable, IComparable<T>
+        public static T Min<T>(this T obj) where T : IComparable, IComparable<T>
         {
-            var type = typeof(T);
-
-            if (IsNumeric(type))
-            {
-                return true;
-            }
-            throw new Exception($"{nameof(T)} is not a numeric type");
+            return CheckObjType(obj);
         }
 
         /// <summary>
         /// Avg(column_name)
         /// </summary>
-        public static bool Avg<T>(this T obj) where T : IComparable, IComparable<T>
+        public static T Avg<T>(this T obj) where T : IComparable, IComparable<T>
         {
-            var type = typeof(T);
-
-            if (IsNumeric(type))
-            {
-                return true;
-            }
-            throw new Exception($"{nameof(T)} is not a numeric type");
+            return CheckObjType(obj);
         }
 
         /// <summary>
         /// Sum(column_name)
         /// </summary>
-        public static bool Sum<T>(this T obj) where T : IComparable, IComparable<T>
+        public static T Sum<T>(this T obj) where T : IComparable, IComparable<T>
         {
-            var type = typeof(T);
-
-            if (IsNumeric(type))
-            {
-                return true;
-            }
-            throw new Exception($"{nameof(T)} is not a numeric type");
+            return CheckObjType(obj);
         }
 
+        /// <summary>
+        /// Count(column_name)
+        /// </summary>
+        public static T Count<T>(this T obj) where T : IComparable, IComparable<T>
+        {
+            return CheckObjType(obj);
+        }
     }
 }

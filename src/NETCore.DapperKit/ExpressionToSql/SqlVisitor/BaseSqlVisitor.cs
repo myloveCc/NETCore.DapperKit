@@ -159,7 +159,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
         }
 
         //common
-        protected bool MemberIsDataColumn(MemberExpression expression, ISqlBuilder sqlBuilder)
+        protected static bool MemberIsDataColumn(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
             var memberExpression = expression as MemberExpression;
             PropertyInfo property = memberExpression.Member as PropertyInfo;
@@ -174,7 +174,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             }
         }
 
-        protected object GetExpreesionValue(Expression expression)
+        protected static object GetExpreesionValue(Expression expression)
         {
             object value = null;
             if (expression is ConstantExpression)
