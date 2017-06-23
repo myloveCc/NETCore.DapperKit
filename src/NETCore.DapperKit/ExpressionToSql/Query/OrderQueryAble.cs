@@ -37,7 +37,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         public IOrderQueryAble<T> ThenByDescending(Expression<Func<T, object>> expression)
         {
             Check.Argument.IsNotNull(expression, nameof(expression));
-            SqlVistorProvider.ThenBy(expression.Body, SqlBuilder);
+            SqlVistorProvider.ThenByDescending(expression.Body, SqlBuilder);
             return this;
         }
     }

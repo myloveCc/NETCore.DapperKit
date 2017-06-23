@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq.Expressions;
+using NETCore.DapperKit.Shared;
+using NETCore.DapperKit.ExpressionToSql.SqlVisitor;
 
 namespace NETCore.DapperKit.ExpressionToSql.Query
 {
@@ -16,12 +18,16 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
 
         public ICalculateQueryAble<T> GroupBy(Expression<Func<T, object>> expression)
         {
-            throw new NotImplementedException();
+            Check.Argument.IsNotNull(expression, nameof(expression));
+            SqlVistorProvider.GroupBy(expression.Body, SqlBuilder);
+            return this;
         }
 
         public ICalculateQueryAble<T> Where(Expression<Func<T, bool>> expression)
         {
-            throw new NotImplementedException();
+            Check.Argument.IsNotNull(expression, nameof(expression));
+            SqlVistorProvider.Where(expression.Body, SqlBuilder);
+            return this;
         }
     }
 }

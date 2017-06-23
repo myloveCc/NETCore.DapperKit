@@ -34,7 +34,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
 
         ISelectQueryAble<T> Select<T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression = null);
 
-        ICalculateQueryAble<T> Count(Expression<Func<T, object>> expression);
+        ICalculateQueryAble<T> Count(Expression<Func<T, object>> expression = null);
 
         ICalculateQueryAble<T> Avg(Expression<Func<T, object>> expression);
 

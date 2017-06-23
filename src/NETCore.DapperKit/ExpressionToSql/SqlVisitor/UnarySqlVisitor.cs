@@ -1,4 +1,5 @@
 using NETCore.DapperKit.ExpressionToSql.Core;
+using NETCore.DapperKit.ExpressionToSql.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -26,7 +27,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 var columnName = memberExp.Member.Name;
                 var sqlParamName = sqlBuilder.SetSqlParameter(0);
 
-                sqlBuilder.AppendWhereSql($"{tableAliax}{sqlBuilder._SqlFormater.Left}{columnName}{sqlBuilder._SqlFormater.Right} ");
+                sqlBuilder.AppendWhereSql($"{tableAliax}{sqlBuilder.Formate(columnName)} ");
                 sqlBuilder.AppendWhereSql("= ");
                 sqlBuilder.AppendWhereSql($"{sqlParamName} ");
             }
@@ -61,7 +62,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 var columnName = memberExp.Member.Name;
                 var sqlParamName = sqlBuilder.SetSqlParameter(0);
 
-                sqlBuilder.AppendWhereSql($"{tableAliax}{sqlBuilder._SqlFormater.Left}{columnName}{sqlBuilder._SqlFormater.Right} ");
+                sqlBuilder.AppendWhereSql($"{tableAliax}{sqlBuilder.Formate(columnName)} ");
                 sqlBuilder.AppendWhereSql("= ");
                 sqlBuilder.AppendWhereSql($"{sqlParamName} ");
             }
@@ -81,6 +82,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder GroupBy(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.GroupBy(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
 
@@ -109,26 +111,31 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Max(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.Max(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Min(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.Min(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Avg(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.Avg(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Count(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.Count(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Sum(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.Sum(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
     }

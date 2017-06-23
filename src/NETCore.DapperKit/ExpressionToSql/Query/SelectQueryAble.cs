@@ -126,13 +126,6 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             return this;
         }
 
-        public ISelectQueryAble<T> GroupBy(Expression<Func<T, object>> expression)
-        {
-            Check.Argument.IsNotNull(expression, nameof(expression));
-            SqlVistorProvider.GroupBy(expression.Body, SqlBuilder);
-            return this;
-        }
-
         public IOrderQueryAble<T> OrderBy(Expression<Func<T, object>> expression)
         {
             Check.Argument.IsNotNull(expression, nameof(expression));

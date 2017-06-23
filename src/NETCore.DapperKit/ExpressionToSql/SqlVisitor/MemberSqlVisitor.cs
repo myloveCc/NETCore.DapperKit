@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Reflection;
 using NETCore.DapperKit.ExpressionToSql.Core;
+using NETCore.DapperKit.ExpressionToSql.Extensions;
 using NETCore.DapperKit.Extensions;
 using System.Collections;
 using System.Linq;
@@ -43,8 +44,8 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 }
 
                 //columns
-                var name = propertyInfo.Name;
-                columns.Add($"{sqlBuilder._SqlFormater.Left}{name}{sqlBuilder._SqlFormater.Right}");
+                var columnName = propertyInfo.Name;
+                columns.Add($"{sqlBuilder.Formate(columnName)}");
 
                 var value = propertyInfo.GetValue(entity, null);
                 //formater bool value to true:1 false:0
@@ -80,11 +81,11 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
             var tableAlias = GetTableAlias(expression, sqlBuilder);
             //get table column name
-            var columnName = $"{tableAlias}{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right}";
+            var columnName = $"{tableAlias}{sqlBuilder.Formate(expression.Member.Name)}";
             //get data column name
-            var fieldName = $"{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right}";
+            var fieldName = $"{sqlBuilder.Formate(expression.Member.Name)}";
 
-            sqlBuilder.AppendSelectSql($"{columnName} {fieldName} ");
+            sqlBuilder.AddSelectColumn($"{columnName} {fieldName} ");
 
             return sqlBuilder;
         }
@@ -92,14 +93,14 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
         protected override ISqlBuilder Join(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
             var tableAlias = GetTableAlias(expression, sqlBuilder);
-            sqlBuilder.AppendJoinSql($"{tableAlias}{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right} ");
+            sqlBuilder.AppendJoinSql($"{tableAlias}{sqlBuilder.Formate(expression.Member.Name)} ");
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Where(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
             var tableAlias = GetTableAlias(expression, sqlBuilder);
-            sqlBuilder.AppendWhereSql($"{tableAlias}{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right} ");
+            sqlBuilder.AppendWhereSql($"{tableAlias}{sqlBuilder.Formate(expression.Member.Name)} ");
             return sqlBuilder;
         }
 
@@ -137,13 +138,18 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder GroupBy(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
+            var tableAlias = GetTableAlias(expression, sqlBuilder);
+
+            var columnAlias = $"{tableAlias}{sqlBuilder.Formate(expression.Member.Name)} ";
+            sqlBuilder.AddCalculateColumn(columnAlias);
+            sqlBuilder.AppendGroupSql(columnAlias);
             return sqlBuilder;
         }
 
         protected override ISqlBuilder OrderBy(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
             var tableAlias = GetTableAlias(expression, sqlBuilder);
-            sqlBuilder.AppendOrderSql($"{tableAlias}{expression.Member.Name} ASC ");
+            sqlBuilder.AppendOrderSql($"{tableAlias}{sqlBuilder.Formate(expression.Member.Name)} ASC ");
 
             return sqlBuilder;
         }
@@ -151,7 +157,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
         protected override ISqlBuilder ThenBy(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
             var tableAlias = GetTableAlias(expression, sqlBuilder);
-            sqlBuilder.AppendOrderSql($"{tableAlias}{expression.Member.Name} ASC ");
+            sqlBuilder.AppendOrderSql($"{tableAlias}{sqlBuilder.Formate(expression.Member.Name)} ASC ");
 
             return sqlBuilder;
         }
@@ -159,7 +165,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
         protected override ISqlBuilder OrderByDescending(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
             var tableAlias = GetTableAlias(expression, sqlBuilder);
-            sqlBuilder.AppendOrderSql($"{tableAlias}{expression.Member.Name} DESC ");
+            sqlBuilder.AppendOrderSql($"{tableAlias}{sqlBuilder.Formate(expression.Member.Name)} DESC ");
 
             return sqlBuilder;
         }
@@ -167,47 +173,48 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
         protected override ISqlBuilder ThenByDescending(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
             var tableAlias = GetTableAlias(expression, sqlBuilder);
-            sqlBuilder.AppendOrderSql($"{tableAlias}{expression.Member.Name} DESC ");
+            sqlBuilder.AppendOrderSql($"{tableAlias}{sqlBuilder.Formate(expression.Member.Name)} DESC ");
 
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Delete(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-            sqlBuilder.AppendWhereSql($"{sqlBuilder._SqlFormater.Left}{expression.Member.Name}{sqlBuilder._SqlFormater.Right} ");
+            sqlBuilder.AppendWhereSql($"{sqlBuilder.Formate(expression.Member.Name)} ");
 
             return sqlBuilder;
         }
 
-
         private ISqlBuilder AggregateFunctionParser(MemberExpression expression, ISqlBuilder sqlBuilder, string functionName)
         {
+            string columnName = expression.Member.Name;
+            sqlBuilder.AddCalculateColumn($"{functionName}({sqlBuilder.Formate(columnName)})");
             return sqlBuilder;
         }
 
         protected override ISqlBuilder Max(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-            return AggregateFunctionParser(expression, sqlBuilder, "Max");
+            return AggregateFunctionParser(expression, sqlBuilder, "MAX");
         }
 
         protected override ISqlBuilder Min(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-            return AggregateFunctionParser(expression, sqlBuilder, "Min");
+            return AggregateFunctionParser(expression, sqlBuilder, "MIN");
         }
 
         protected override ISqlBuilder Avg(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-            return AggregateFunctionParser(expression, sqlBuilder, "Avg");
+            return AggregateFunctionParser(expression, sqlBuilder, "AVG");
         }
 
         protected override ISqlBuilder Count(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-            return AggregateFunctionParser(expression, sqlBuilder, "Count");
+            return AggregateFunctionParser(expression, sqlBuilder, "COUNT");
         }
 
         protected override ISqlBuilder Sum(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
-            return AggregateFunctionParser(expression, sqlBuilder, "Sum");
+            return AggregateFunctionParser(expression, sqlBuilder, "SUM");
         }
     }
 }

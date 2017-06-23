@@ -15,6 +15,8 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         private SqlCommandType _SqlCommandType;
         private readonly DatabaseType _DatabaseType;
         private Dictionary<string, object> _SqlParameters;
+        private List<string> _SelectAlaises;
+        private List<string> _CalculateAlaises;
         private StringBuilder _InsertSqlBuilder;
         private StringBuilder _DeleteSqlBuilder;
         private StringBuilder _UpdateSqlBuilder;
@@ -95,7 +97,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
             {
                 var selectSql = string.Empty;
 
-                selectSql = $"{_SelectSqlBuilder.ToString()}";
+                selectSql = string.Format(_SelectSqlBuilder.ToString(), string.Join(",", _SelectAlaises).TrimEnd());
 
                 if (_IsSelectMultiTable && (_JoinSqlBuilder == null || _JoinSqlBuilder.Length == 0))
                 {
@@ -107,18 +109,40 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                     selectSql += _JoinSqlBuilder.ToString();
                 }
 
-                if (_OrderSqlBuilder != null && _OrderSqlBuilder.Length > 0)
-                {
-                    selectSql += _OrderSqlBuilder.ToString();
-                }
-
                 if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
                 {
                     selectSql += _WhereSqlBuilder.ToString();
                 }
 
+                if (_OrderSqlBuilder != null && _OrderSqlBuilder.Length > 0)
+                {
+                    selectSql += _OrderSqlBuilder.ToString();
+                }
+
+                //TOOD add group
+
                 return $"{selectSql.TrimEnd()};";
             }
+
+            if (_SqlCommandType == SqlCommandType.Calculate)
+            {
+                var calculateSql = string.Empty;
+
+                calculateSql = string.Format(_CalculateSqlBuilder.ToString(), string.Join(",", _CalculateAlaises).TrimEnd());
+
+                if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+                {
+                    calculateSql += _WhereSqlBuilder.ToString();
+                }
+
+                if (_GroupSqlBuilder != null && _GroupSqlBuilder.Length > 0)
+                {
+                    calculateSql += _GroupSqlBuilder.ToString();
+                }
+
+                return $"{calculateSql.TrimEnd()};";
+            }
+
             return string.Empty;
         }
 
@@ -358,8 +382,41 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                 {
                     _GroupSqlBuilder = new StringBuilder();
                 }
-                _GroupSqlBuilder.Append(sql);
+                if (_GroupSqlBuilder.Length == 0)
+                {
+                    _GroupSqlBuilder.Append($"GROUP BY {sql}");
+                }
+                else
+                {
+                    _GroupSqlBuilder.Append($",{sql}");
+                }
             }
+        }
+
+        /// <summary>
+        /// add select column
+        /// </summary>
+        /// <param name="columnAlias"></param>
+        public void AddSelectColumn(string columnAlias)
+        {
+            if (_SelectAlaises == null)
+            {
+                _SelectAlaises = new List<string>();
+            }
+            _SelectAlaises.Add(columnAlias);
+        }
+
+        /// <summary>
+        /// add calculate column
+        /// </summary>
+        /// <param name="columnAlias"></param>
+        public void AddCalculateColumn(string columnAlias)
+        {
+            if (_CalculateAlaises == null)
+            {
+                _CalculateAlaises = new List<string>();
+            }
+            _CalculateAlaises.Add(columnAlias);
         }
 
         /// <summary>

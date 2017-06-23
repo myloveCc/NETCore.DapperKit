@@ -127,8 +127,9 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         private ISelectQueryAble<T> SelectParser(Expression expression, Expression expressionBody, params Type[] types)
         {
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Select);
-            _SqlBuilder.AppendSelectSql("SELECT ");
             _SqlBuilder.SetTableAlias(_MainTableName);
+
+            _SqlBuilder.AppendSelectSql($"SELECT {{0}} FROM {_MainTableName} {_SqlBuilder.GetTableAlias(_MainTableName)} ");
 
             var selectQueryAble = new SelectQueryAble<T>(_SqlBuilder, _DapperKitProvider);
 
@@ -147,24 +148,32 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
                         selectQueryAble.TableTypeCollections.Add(type);
                     }
                 }
-                
+
                 SqlVistorProvider.Select(expressionBody, _SqlBuilder);
             }
             else
             {
-                _SqlBuilder.AppendSelectSql("* ");
+                _SqlBuilder.AddSelectColumn("* ");
             }
-            _SqlBuilder.SetTableAlias(_MainTableName);
-            _SqlBuilder.AppendSelectSql($"FROM {_MainTableName} {_SqlBuilder.GetTableAlias(_MainTableName)} ");
+
             return selectQueryAble;
         }
 
-        public ICalculateQueryAble<T> Count(Expression<Func<T, object>> expression)
+        public ICalculateQueryAble<T> Count(Expression<Func<T, object>> expression = null)
         {
-            Check.Argument.IsNotNull(expression, nameof(expression));
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
 
-            SqlVistorProvider.Count(expression.Body, _SqlBuilder);
+            _SqlBuilder.AppendCalculateSql($"SELECT {{0}} FROM {_MainTableName} ");
+            if (expression != null)
+            {
+
+                SqlVistorProvider.Count(expression.Body, _SqlBuilder);
+            }
+            else
+            {
+                _SqlBuilder.AddCalculateColumn("COUNT(*) ");
+            }
+
             return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
@@ -173,7 +182,9 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             Check.Argument.IsNotNull(expression, nameof(expression));
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
 
+            _SqlBuilder.AppendCalculateSql($"SELECT {{0}} FROM {_MainTableName} ");
             SqlVistorProvider.Avg(expression.Body, _SqlBuilder);
+
             return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
@@ -182,7 +193,9 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             Check.Argument.IsNotNull(expression, nameof(expression));
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
 
+            _SqlBuilder.AppendCalculateSql($"SELECT {{0}} FROM {_MainTableName} ");
             SqlVistorProvider.Max(expression.Body, _SqlBuilder);
+
             return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
@@ -191,6 +204,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             Check.Argument.IsNotNull(expression, nameof(expression));
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
 
+            _SqlBuilder.AppendCalculateSql($"SELECT {{0}} FROM {_MainTableName} ");
             SqlVistorProvider.Min(expression.Body, _SqlBuilder);
             return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
@@ -200,7 +214,9 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             Check.Argument.IsNotNull(expression, nameof(expression));
             _SqlBuilder.SetSqlCommandType(SqlCommandType.Calculate);
 
+            _SqlBuilder.AppendCalculateSql($"SELECT {{0}} FROM {_MainTableName} ");
             SqlVistorProvider.Sum(expression.Body, _SqlBuilder);
+
             return new CalculateQueryAble<T>(_SqlBuilder, _DapperKitProvider);
         }
 
@@ -209,7 +225,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         /// </summary>
         public void Dispose()
         {
-            
+
         }
     }
 }

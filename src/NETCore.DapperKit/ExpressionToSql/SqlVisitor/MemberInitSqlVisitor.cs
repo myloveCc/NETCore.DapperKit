@@ -1,4 +1,5 @@
 using NETCore.DapperKit.ExpressionToSql.Core;
+using NETCore.DapperKit.ExpressionToSql.Extensions;
 using NETCore.DapperKit.Extensions;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     continue;
                 }
                 //add column name
-                columns.Add($"{sqlBuilder._SqlFormater.Left}{property.Name}{sqlBuilder._SqlFormater.Right}");
+                columns.Add($"{sqlBuilder.Formate(property.Name)}");
 
                 string sqlParamName = string.Empty;
                 var memeberExp = memberAss.Expression;
@@ -66,7 +67,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
                 //var tablAliax = GetTableAlias(memberExp, sqlBuilder);
 
-                var columnName = $"{sqlBuilder._SqlFormater.Left}{member.Name}{sqlBuilder._SqlFormater.Right}";
+                var columnName = $"{sqlBuilder.Formate(member.Name)}";
                 var value = GetExpreesionValue(memberExp);
                 string sqlParamName = sqlBuilder.SetSqlParameter(value);
                 updates.Add($"{columnName} = {sqlParamName}");
@@ -79,9 +80,11 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Select(MemberInitExpression expression, ISqlBuilder sqlBuilder)
         {
-            var selects = new List<string>();
+            var isHasAnyColumn = false;
             foreach (MemberAssignment memberAss in expression.Bindings)
             {
+                isHasAnyColumn = true;
+
                 var property = memberAss.Member as PropertyInfo;
                 if (!property.IsDataConlumnProperty(expression.Type))
                 {
@@ -90,21 +93,17 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
                 var memberExp = memberAss.Expression as MemberExpression;
                 var tablAlias = GetTableAlias(memberExp, sqlBuilder);
-                var columnName = $"{tablAlias}{sqlBuilder._SqlFormater.Left}{memberExp.Member.Name}{sqlBuilder._SqlFormater.Right}";
+                var columnName = $"{tablAlias}{sqlBuilder.Formate(memberExp.Member.Name)}";
 
                 MemberInfo member = memberAss.Member;
-                var filedName = $"{sqlBuilder._SqlFormater.Left}{member.Name}{sqlBuilder._SqlFormater.Right}";
+                var filedName = $"{sqlBuilder.Formate(member.Name)}";
 
-                selects.Add($"{columnName} {filedName}");
+                sqlBuilder.AddSelectColumn($"{columnName} {filedName}");
             }
 
-            if (!selects.Any())
+            if (!isHasAnyColumn)
             {
-                sqlBuilder.AppendSelectSql("* ");
-            }
-            else
-            {
-                sqlBuilder.AppendSelectSql($"{string.Join(",", selects)} ");
+                sqlBuilder.AddSelectColumn("* ");
             }
 
             return sqlBuilder;

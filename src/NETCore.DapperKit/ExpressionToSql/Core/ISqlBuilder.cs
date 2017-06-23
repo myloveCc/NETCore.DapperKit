@@ -112,6 +112,21 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         void AppendGroupSql(string sql);
 
         /// <summary>
+        /// add select column
+        /// </summary>
+        /// <param name="columnName"></param>
+        /// <param name="columnAlaises"></param>
+
+        void AddSelectColumn(string columnAlaises);
+
+        /// <summary>
+        /// add calculate column
+        /// </summary>
+        /// <param name="columnAlaises"></param>
+        void AddCalculateColumn(string columnAlaises);
+
+
+        /// <summary>
         /// set skip num
         /// </summary>
         /// <param name="skipNum"></param>

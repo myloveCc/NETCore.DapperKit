@@ -38,7 +38,5 @@ namespace NETCore.DapperKit.ExpressionToSql.Query.Interface
 
         IOrderQueryAble<T> OrderByDescending(Expression<Func<T, object>> expression);
 
-        ISelectQueryAble<T> GroupBy(Expression<Func<T, object>> expression);
-
     }
 }
