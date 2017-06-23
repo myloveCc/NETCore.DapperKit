@@ -142,24 +142,35 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder OrderBy(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
+            var tableAlias = GetTableAlias(expression, sqlBuilder);
+            sqlBuilder.AppendOrderSql($"{tableAlias}{expression.Member.Name} ASC ");
+
             return sqlBuilder;
         }
 
         protected override ISqlBuilder ThenBy(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
+            var tableAlias = GetTableAlias(expression, sqlBuilder);
+            sqlBuilder.AppendOrderSql($"{tableAlias}{expression.Member.Name} ASC ");
+
             return sqlBuilder;
         }
 
         protected override ISqlBuilder OrderByDescending(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
+            var tableAlias = GetTableAlias(expression, sqlBuilder);
+            sqlBuilder.AppendOrderSql($"{tableAlias}{expression.Member.Name} DESC ");
+
             return sqlBuilder;
         }
 
         protected override ISqlBuilder ThenByDescending(MemberExpression expression, ISqlBuilder sqlBuilder)
         {
+            var tableAlias = GetTableAlias(expression, sqlBuilder);
+            sqlBuilder.AppendOrderSql($"{tableAlias}{expression.Member.Name} DESC ");
+
             return sqlBuilder;
         }
-
 
         protected override ISqlBuilder Delete(MemberExpression expression, ISqlBuilder sqlBuilder)
         {

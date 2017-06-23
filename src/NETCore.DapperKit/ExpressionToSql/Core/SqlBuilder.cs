@@ -107,6 +107,11 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                     selectSql += _JoinSqlBuilder.ToString();
                 }
 
+                if (_OrderSqlBuilder != null && _OrderSqlBuilder.Length > 0)
+                {
+                    selectSql += _OrderSqlBuilder.ToString();
+                }
+
                 if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
                 {
                     selectSql += _WhereSqlBuilder.ToString();
@@ -329,7 +334,15 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
                 {
                     _OrderSqlBuilder = new StringBuilder();
                 }
-                _OrderSqlBuilder.Append(sql);
+
+                if (_OrderSqlBuilder.Length == 0)
+                {
+                    _OrderSqlBuilder.Append($"ORDER BY {sql}");
+                }
+                else
+                {
+                    _OrderSqlBuilder.Append($",{sql}");
+                }
             }
         }
 

@@ -86,20 +86,24 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder OrderBy(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.OrderBy(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
 
         protected override ISqlBuilder ThenBy(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.ThenBy(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
         protected override ISqlBuilder OrderByDescending(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.OrderByDescending(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
 
         protected override ISqlBuilder ThenByDescending(UnaryExpression expression, ISqlBuilder sqlBuilder)
         {
+            SqlVistorProvider.ThenByDescending(expression.Operand, sqlBuilder);
             return sqlBuilder;
         }
 

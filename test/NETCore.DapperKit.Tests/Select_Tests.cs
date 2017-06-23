@@ -410,6 +410,13 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select order by test")]
         public void Select_Orderby_Test()
         {
+            var query = _DapperContext.DataSet<SysUser>().Select().OrderBy(m => m.CreateTime);
+            var sqlBuilder = query.SqlBuilder;
+
+            var sql = sqlBuilder.GetSqlString();
+            var sqlParams = sqlBuilder.GetSqlParameters();
+
+            Assert.Equal("SELECT * FROM [SysUser] a ORDER BY a.[CreateTime] ASC;", sql);
             Assert.True(false);
         }
 
