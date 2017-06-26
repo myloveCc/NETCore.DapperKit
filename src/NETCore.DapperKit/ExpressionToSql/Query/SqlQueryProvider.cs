@@ -154,6 +154,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             else
             {
                 _SqlBuilder.AddSelectColumn("* ");
+                _SqlBuilder.AddSelectPageColumn("* ");
             }
 
             return selectQueryAble;

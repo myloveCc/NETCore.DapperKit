@@ -15,6 +15,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         private SqlCommandType _SqlCommandType;
         private readonly DatabaseType _DatabaseType;
         private Dictionary<string, object> _SqlParameters;
+        private List<string> _SelectPageAlaises;
         private List<string> _SelectAlaises;
         private List<string> _CalculateAlaises;
         private StringBuilder _InsertSqlBuilder;
@@ -57,93 +58,162 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// get sql string
         /// </summary>
         /// <returns></returns>
-        public string GetSqlString()
+        public string GetSql()
         {
             if (_SqlCommandType == SqlCommandType.Insert)
             {
-                return $"{_InsertSqlBuilder.ToString().TrimEnd()};";
+                return GetInsertSql();
             }
 
             if (_SqlCommandType == SqlCommandType.Delete)
             {
-
-                var deleteSql = string.Empty;
-
-                deleteSql = $"{_DeleteSqlBuilder.ToString()}";
-
-                if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
-                {
-                    deleteSql += _WhereSqlBuilder.ToString();
-                }
-
-                return $"{deleteSql.TrimEnd()};";
+                return GetDeleteSql();
             }
 
             if (_SqlCommandType == SqlCommandType.Update)
             {
-                var updateSql = string.Empty;
-
-                updateSql = $"{_UpdateSqlBuilder.ToString()}";
-
-                if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
-                {
-                    updateSql += _WhereSqlBuilder.ToString();
-                }
-
-                return $"{updateSql.TrimEnd()};";
+                return GetUpdateSql();
             }
 
             if (_SqlCommandType == SqlCommandType.Select)
             {
-                var selectSql = string.Empty;
-
-                selectSql = string.Format(_SelectSqlBuilder.ToString(), string.Join(",", _SelectAlaises).TrimEnd());
-
-                if (_IsSelectMultiTable && (_JoinSqlBuilder == null || _JoinSqlBuilder.Length == 0))
+                if (SkipNum <= 0)
                 {
-                    throw new Exception("select multi data table must include join sql");
+                    return GetSelectSql();
                 }
-
-                if (_JoinSqlBuilder != null && _JoinSqlBuilder.Length > 0)
+                else
                 {
-                    selectSql += _JoinSqlBuilder.ToString();
+                    return GetPageSelectSql();
                 }
-
-                if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
-                {
-                    selectSql += _WhereSqlBuilder.ToString();
-                }
-
-                if (_OrderSqlBuilder != null && _OrderSqlBuilder.Length > 0)
-                {
-                    selectSql += _OrderSqlBuilder.ToString();
-                }
-
-                //TOOD add group
-
-                return $"{selectSql.TrimEnd()};";
             }
 
             if (_SqlCommandType == SqlCommandType.Calculate)
             {
-                var calculateSql = string.Empty;
-
-                calculateSql = string.Format(_CalculateSqlBuilder.ToString(), string.Join(",", _CalculateAlaises).TrimEnd());
-
-                if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
-                {
-                    calculateSql += _WhereSqlBuilder.ToString();
-                }
-
-                if (_GroupSqlBuilder != null && _GroupSqlBuilder.Length > 0)
-                {
-                    calculateSql += _GroupSqlBuilder.ToString();
-                }
-
-                return $"{calculateSql.TrimEnd()};";
+                return GetCalculateSql();
             }
 
             return string.Empty;
+        }
+
+        private string GetInsertSql()
+        {
+            if (_InsertSqlBuilder != null)
+            {
+                return $"{_InsertSqlBuilder.ToString().TrimEnd()};";
+            }
+            else
+            {
+                throw new Exception("Insert sql is empty");
+            }
+        }
+
+        private string GetDeleteSql()
+        {
+            var deleteBuilder = new StringBuilder();
+
+            deleteBuilder.Append($"{_DeleteSqlBuilder.ToString()}");
+
+            if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+            {
+                deleteBuilder.Append(_WhereSqlBuilder.ToString());
+            }
+
+            return $"{deleteBuilder.ToString().TrimEnd()};";
+        }
+
+        private string GetUpdateSql()
+        {
+            var updateBuilder = new StringBuilder();
+
+            updateBuilder.Append($"{_UpdateSqlBuilder.ToString()}");
+
+            if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+            {
+                updateBuilder.Append(_WhereSqlBuilder.ToString());
+            }
+            return $"{updateBuilder.ToString().TrimEnd()};";
+        }
+
+        private string GetSelectSql()
+        {
+            var selectBuilder = new StringBuilder();
+
+            selectBuilder.AppendFormat(_SelectSqlBuilder.ToString(), string.Join(",", _SelectAlaises).TrimEnd());
+
+            if (_IsSelectMultiTable && (_JoinSqlBuilder == null || _JoinSqlBuilder.Length == 0))
+            {
+                throw new Exception("select multi data table must include join sql");
+            }
+
+            if (_JoinSqlBuilder != null && _JoinSqlBuilder.Length > 0)
+            {
+                selectBuilder.Append(_JoinSqlBuilder.ToString());
+            }
+
+            if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+            {
+                selectBuilder.Append(_WhereSqlBuilder.ToString());
+            }
+
+            if (_OrderSqlBuilder != null && _OrderSqlBuilder.Length > 0)
+            {
+                selectBuilder.Append(_OrderSqlBuilder.ToString());
+            }
+
+            if (_GroupSqlBuilder != null && _GroupSqlBuilder.Length > 0)
+            {
+                selectBuilder.Append(_GroupSqlBuilder.ToString());
+            }
+
+            return $"{selectBuilder.ToString().TrimEnd()};";
+        }
+
+        private string GetPageSelectSql()
+        {
+            var selectBuilder = new StringBuilder();
+
+            selectBuilder.Append($"SELECT {string.Join(",", _SelectPageAlaises).TrimEnd()} FROM ");
+            selectBuilder.Append("( ");
+            selectBuilder.AppendFormat(_SelectSqlBuilder.ToString(), $"{string.Join(",", _SelectAlaises).TrimEnd()},ROW_NUMBER() OVER ( { _OrderSqlBuilder.ToString()}) AS [RowNumber]");
+            if (_IsSelectMultiTable && (_JoinSqlBuilder == null || _JoinSqlBuilder.Length == 0))
+            {
+                throw new Exception("select multi data table must include join sql");
+            }
+
+            if (_JoinSqlBuilder != null && _JoinSqlBuilder.Length > 0)
+            {
+                selectBuilder.Append(_JoinSqlBuilder.ToString());
+            }
+
+            if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+            {
+                selectBuilder.Append(_WhereSqlBuilder.ToString());
+            }
+
+            selectBuilder.Append($") DapperKit_Temp_PageTable ");
+
+            selectBuilder.Append($"WHERE DapperKit_Temp_PageTable.RowNumber>{SkipNum} AND DapperKit_Temp_PageTable.RowNumber<={SkipNum + TakeNum};");
+
+            return selectBuilder.ToString();
+        }
+
+        private string GetCalculateSql()
+        {
+            var calculateBuilder = new StringBuilder();
+
+            calculateBuilder.AppendFormat(string.Format(_CalculateSqlBuilder.ToString(), string.Join(",", _CalculateAlaises).TrimEnd()));
+
+            if (_WhereSqlBuilder != null && _WhereSqlBuilder.Length > 0)
+            {
+                calculateBuilder.Append(_WhereSqlBuilder.ToString());
+            }
+
+            if (_GroupSqlBuilder != null && _GroupSqlBuilder.Length > 0)
+            {
+                calculateBuilder.Append(_GroupSqlBuilder.ToString());
+            }
+
+            return $"{calculateBuilder.ToString().TrimEnd()};";
         }
 
         #endregion
@@ -157,7 +227,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
 
         #endregion
 
-        #region DbParameter
+        #region SqlParameter
 
         /// <summary>
         /// set sql param
@@ -182,7 +252,7 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// get sql param dictionary
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, object> GetSqlParameters()
+        public Dictionary<string, object> GetSqlParams()
         {
             return _SqlParameters;
         }
@@ -407,6 +477,19 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         }
 
         /// <summary>
+        /// add page column
+        /// </summary>
+        /// <param name="pageColumnAlias"></param>
+        public void AddSelectPageColumn(string pageColumnAlias)
+        {
+            if (_SelectPageAlaises == null)
+            {
+                _SelectPageAlaises = new List<string>();
+            }
+            _SelectPageAlaises.Add(pageColumnAlias);
+        }
+
+        /// <summary>
         /// add calculate column
         /// </summary>
         /// <param name="columnAlias"></param>
@@ -425,7 +508,12 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// <param name="skipNum"></param>
         public void Skip(int skipNum)
         {
-            throw new NotImplementedException();
+            if (skipNum <= 0)
+            {
+                throw new Exception("The skip value is must greate than 0");
+            }
+
+            SkipNum = skipNum;
         }
 
         /// <summary>
@@ -434,7 +522,10 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// <param name="takeNum"></param>
         public void Take(int takeNum)
         {
-            throw new NotImplementedException();
+            if (SkipNum > 0)
+            {
+                TakeNum = takeNum <= 0 ? 20 : takeNum;
+            }
         }
 
         #endregion
@@ -442,7 +533,24 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         #region Dispose
         public void Dispose()
         {
-
+            _QueueTableAlias = null;
+            _TableNames = null;
+            _SqlParameters = null;
+            _SelectPageAlaises = null;
+            _SelectAlaises = null;
+            _CalculateAlaises = null;
+            _InsertSqlBuilder = null;
+            _DeleteSqlBuilder = null;
+            _UpdateSqlBuilder = null;
+            _SelectSqlBuilder = null;
+            _CalculateSqlBuilder = null;
+            _WhereSqlBuilder = null;
+            _JoinSqlBuilder = null;
+            _OrderSqlBuilder = null;
+            _GroupSqlBuilder = null;
+            SkipNum = 0;
+            TakeNum = 0;
+            _IsSelectMultiTable = false;
         }
         #endregion
 

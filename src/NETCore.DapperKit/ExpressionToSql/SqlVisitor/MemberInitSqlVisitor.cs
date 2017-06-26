@@ -36,7 +36,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 string sqlParamName = string.Empty;
                 var memeberExp = memberAss.Expression;
 
-                var value = GetExpreesionValue(memeberExp);
+                var value = TryGetExpreesionValue(memeberExp);
                 sqlParamName = sqlBuilder.SetSqlParameter(value);
 
                 parames.Add(sqlParamName);
@@ -68,7 +68,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 //var tablAliax = GetTableAlias(memberExp, sqlBuilder);
 
                 var columnName = $"{sqlBuilder.Formate(member.Name)}";
-                var value = GetExpreesionValue(memberExp);
+                var value = TryGetExpreesionValue(memberExp);
                 string sqlParamName = sqlBuilder.SetSqlParameter(value);
                 updates.Add($"{columnName} = {sqlParamName}");
             }
@@ -85,25 +85,27 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             {
                 isHasAnyColumn = true;
 
-                var property = memberAss.Member as PropertyInfo;
-                if (!property.IsDataConlumnProperty(expression.Type))
+                var memberExp = memberAss.Expression as MemberExpression;
+                var property = memberExp.Member as PropertyInfo;
+
+                if (!property.IsDataConlumnProperty(memberExp.Expression.Type))
                 {
                     continue;
                 }
-
-                var memberExp = memberAss.Expression as MemberExpression;
                 var tablAlias = GetTableAlias(memberExp, sqlBuilder);
                 var columnName = $"{tablAlias}{sqlBuilder.Formate(memberExp.Member.Name)}";
 
                 MemberInfo member = memberAss.Member;
-                var filedName = $"{sqlBuilder.Formate(member.Name)}";
+                var fieldName = $"{sqlBuilder.Formate(member.Name)}";
 
-                sqlBuilder.AddSelectColumn($"{columnName} {filedName}");
+                sqlBuilder.AddSelectColumn($"{columnName} {fieldName}");
+                sqlBuilder.AddSelectPageColumn(fieldName);
             }
 
             if (!isHasAnyColumn)
             {
                 sqlBuilder.AddSelectColumn("* ");
+                sqlBuilder.AddSelectPageColumn("* ");
             }
 
             return sqlBuilder;

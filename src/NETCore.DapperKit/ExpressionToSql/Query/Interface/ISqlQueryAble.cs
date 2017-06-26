@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace NETCore.DapperKit.ExpressionToSql.Query.Interface
 {
-    public interface ISqlQueryAble<T> where T : class
+    public interface ISqlQueryAble<T> : ICollectionQueryAble<T> where T : class
     {
-        ISqlBuilder SqlBuilder { get; }
 
-        TResult Exect<TResult>();
+        int Exect();
 
-        Task<TResult> ExectAsync<TResult>();
+        Task<int> ExectAsync();
     }
 }

@@ -48,13 +48,13 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// get sql param dic
         /// </summary>
         /// <returns></returns>
-        Dictionary<string, object> GetSqlParameters();
+        Dictionary<string, object> GetSqlParams();
 
         /// <summary>
         /// get sql string
         /// </summary>
         /// <returns></returns>
-        string GetSqlString();
+        string GetSql();
 
         /// <summary>
         /// append insert sql string
@@ -114,16 +114,21 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         /// <summary>
         /// add select column
         /// </summary>
-        /// <param name="columnName"></param>
-        /// <param name="columnAlaises"></param>
+        /// <param name="columnAlais"></param>
 
-        void AddSelectColumn(string columnAlaises);
+        void AddSelectColumn(string columnAlais);
+
+        /// <summary>
+        /// add page column
+        /// </summary>
+        /// <param name="pageColumnAlais"></param>
+        void AddSelectPageColumn(string pageColumnAlais);
 
         /// <summary>
         /// add calculate column
         /// </summary>
-        /// <param name="columnAlaises"></param>
-        void AddCalculateColumn(string columnAlaises);
+        /// <param name="columnAlais"></param>
+        void AddCalculateColumn(string columnAlais);
 
 
         /// <summary>

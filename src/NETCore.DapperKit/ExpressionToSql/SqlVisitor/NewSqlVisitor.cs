@@ -42,6 +42,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 var fieldName = $"{sqlBuilder.Formate(expression.Members[i].Name)}";
 
                 sqlBuilder.AddSelectColumn($"{columnName} {fieldName}");
+                sqlBuilder.AddSelectPageColumn(fieldName);
             }
 
             return sqlBuilder;

@@ -43,7 +43,6 @@ namespace NETCore.DapperKit
             return new Lazy<IDbConnection>(() =>
             {
                 var conn = new SqlConnection(Options.ConnectionString);
-                conn.Open();
                 return conn;
             });
         }

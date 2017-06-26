@@ -174,33 +174,55 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             }
         }
 
-        protected static object GetExpreesionValue(Expression expression)
+        protected static object TryGetExpreesionValue(Expression expression)
         {
             object value = null;
-            if (expression is ConstantExpression)
+
+            try
             {
-                ConstantExpression constranExp = expression as ConstantExpression;
-                //bool
-                value = constranExp.Value;
-                if (constranExp.Type == typeof(bool))
+                if (expression is ConstantExpression)
                 {
-                    if (Convert.ToBoolean(value))
+                    ConstantExpression constranExp = expression as ConstantExpression;
+                    //bool
+                    value = constranExp.Value;
+                    if (constranExp.Type == typeof(bool))
                     {
-                        value = 1;
+                        if (Convert.ToBoolean(value))
+                        {
+                            value = 1;
+                        }
+                        else
+                        {
+                            value = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    LambdaExpression lambda = Expression.Lambda(expression);
+                    Delegate fn = lambda.Compile();
+                    ConstantExpression constantExp = Expression.Constant(fn.DynamicInvoke(null), expression.Type);
+                    value = constantExp.Value;
+                }
+                if (value is bool)
+                {
+                    var boolValue = (bool)value;
+
+                    if (boolValue)
+                    {
+                        return 1;
                     }
                     else
                     {
-                        value = 0;
+                        return 0;
                     }
                 }
             }
-            else
+            catch 
             {
-                LambdaExpression lambda = Expression.Lambda(expression);
-                Delegate fn = lambda.Compile();
-                ConstantExpression constantExp = Expression.Constant(fn.DynamicInvoke(null), expression.Type);
-                value = constantExp.Value;
+
             }
+           
             return value;
         }
 

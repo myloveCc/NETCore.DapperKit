@@ -26,7 +26,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select();
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a;", sql);
         }
@@ -36,7 +36,7 @@ namespace NETCore.DapperKit.Tests
         {
             var query = _DapperContext.DataSet<SysUser>().Select(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT a.[Id] [Id] FROM [SysUser] a;", sql);
         }
@@ -47,7 +47,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => new { m.Id, m.Account, m.Password });
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT a.[Id] [Id],a.[Account] [Account],a.[Password] [Password] FROM [SysUser] a;", sql);
         }
@@ -58,8 +58,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => m.Account).Where(m => m.Id == 1);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Account] [Account] FROM [SysUser] a WHERE a.[Id] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -72,8 +72,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => new { m.Id, m.Account, m.Password }).Where(m => m.Id == 1);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Id] [Id],a.[Account] [Account],a.[Password] [Password] FROM [SysUser] a WHERE a.[Id] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -86,8 +86,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => m.Account).Where(m => m.Id == 3 && m.IsAdmin);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Account] [Account] FROM [SysUser] a WHERE a.[Id] = @param0 AND a.[IsAdmin] = @param1;", sql);
             Assert.Equal(2, sqlParams.Count);
@@ -101,8 +101,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => new { m.Id, m.Account, m.Password }).Where(m => m.Id == 3 && m.IsAdmin);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Id] [Id],a.[Account] [Account],a.[Password] [Password] FROM [SysUser] a WHERE a.[Id] = @param0 AND a.[IsAdmin] = @param1;", sql);
             Assert.Equal(2, sqlParams.Count);
@@ -116,8 +116,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => !m.IsAdmin);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[IsAdmin] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -130,8 +130,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => m.Account).Where(m => !m.IsAdmin);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Account] [Account] FROM [SysUser] a WHERE a.[IsAdmin] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -144,8 +144,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => new { UserId = m.Id, LoginName = m.Account, LoginPwd = m.Password }).Where(m => !m.IsAdmin);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Id] [UserId],a.[Account] [LoginName],a.[Password] [LoginPwd] FROM [SysUser] a WHERE a.[IsAdmin] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -158,8 +158,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => new SysUser { Id = m.Id, Account = m.Account, Password = m.Password });
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Id] [Id],a.[Account] [Account],a.[Password] [Password] FROM [SysUser] a;", sql);
         }
@@ -170,8 +170,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => new UserDTO { UserId = m.Id, LoginName = m.Account, LoginPwd = m.Password });
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Id] [UserId],a.[Account] [LoginName],a.[Password] [LoginPwd] FROM [SysUser] a;", sql);
         }
@@ -182,8 +182,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => new SysUser { Id = m.Id, Account = m.Account, Password = m.Password }).Where(m => m.Id == 3);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Id] [Id],a.[Account] [Account],a.[Password] [Password] FROM [SysUser] a WHERE a.[Id] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -196,15 +196,48 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => new UserDTO { UserId = m.Id, LoginName = m.Account, LoginPwd = m.Password }).Where(m => m.Id == 3 && !m.IsAdmin);
 
             var sqlBuilder = query.SqlBuilder;
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT a.[Id] [UserId],a.[Account] [LoginName],a.[Password] [LoginPwd] FROM [SysUser] a WHERE a.[Id] = @param0 AND a.[IsAdmin] = @param1;", sql);
             Assert.Equal(2, sqlParams.Count);
             Assert.Equal(0, sqlParams["@param1"]);
         }
 
-       
-     
+        [Fact(DisplayName = "Select where by object propety test")]
+        public void Select_PraraObj_Test()
+        {
+
+            var paraObj = new SysUser() { Account = "admin", IsAdmin = true };
+
+            var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account == paraObj.Account && m.IsAdmin == paraObj.IsAdmin);
+
+            var sqlBuilder = query.SqlBuilder;
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
+
+            Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] = @param0 AND a.[IsAdmin] = @param1;", sql);
+            Assert.Equal(2, sqlParams.Count);
+            Assert.Equal(1, sqlParams["@param1"]);
+        }
+
+
+        [Fact(DisplayName = "Select page data test")]
+        public void Select_Page_Test()
+        {
+            var query = _DapperContext.DataSet<SysUser>().Select(m => new UserDTO { UserId = m.Id, LoginName = m.Account, LoginPwd = m.Password }).Where(m => m.Id == 3 && !m.IsAdmin).OrderBy(m => m.CreateTime).Skip(1).Take(20);
+
+            var sqlBuilder = query.SqlBuilder;
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
+
+            Assert.Equal("SELECT [UserId],[LoginName],[LoginPwd] FROM ( SELECT a.[Id] [UserId],a.[Account] [LoginName],a.[Password] [LoginPwd],ROW_NUMBER() OVER ( ORDER BY a.[CreateTime] ASC ) AS [RowNumber] FROM [SysUser] a WHERE a.[Id] = @param0 AND a.[IsAdmin] = @param1 ) DapperKit_Temp_PageTable WHERE DapperKit_Temp_PageTable.RowNumber>1 AND DapperKit_Temp_PageTable.RowNumber<=21;", sql);
+            Assert.Equal(2, sqlParams.Count);
+            Assert.Equal(0, sqlParams["@param1"]);
+        }
+
+
+
+
     }
 }

@@ -8,40 +8,39 @@ using Dapper;
 
 namespace NETCore.DapperKit.ExpressionToSql.Query
 {
-    public class BaseSqlQueryAble<T> : ISqlQueryAble<T> where T : class
+    public class BaseSqlQueryAble<T> : BaseCollectionQueryAble<T>, ICollectionQueryAble<T>, ISqlQueryAble<T> where T : class
     {
-        public ISqlBuilder SqlBuilder { get; private set; }
-        public readonly IDapperKitProvider _DapperKitProvider;
-
-        public BaseSqlQueryAble(ISqlBuilder sqlBuilder, IDapperKitProvider provider)
+        public BaseSqlQueryAble(ISqlBuilder sqlBuilder, IDapperKitProvider provider) : base(sqlBuilder, provider)
         {
-            SqlBuilder = sqlBuilder;
-            _DapperKitProvider = provider;
+
         }
 
-        public virtual TResult Exect<TResult>()
+        public virtual int Exect()
         {
             using (SqlBuilder)
             {
-                using (var conn = _DapperKitProvider.DbConnection)
+                using (var conn = DapperKitProvider.DbConnection)
                 {
-                    //TODO
+                    var sql = SqlBuilder.GetSql();
+                    var paras = SqlBuilder.GetSqlParams();
+
+                    return conn.Execute(sql, paras);
                 }
             }
-            return default(TResult);
         }
 
-        public virtual Task<TResult> ExectAsync<TResult>()
+        public virtual Task<int> ExectAsync()
         {
-            return Task<TResult>.Factory.StartNew(() =>
+            using (SqlBuilder)
             {
-                using (SqlBuilder)
+                using (var conn = DapperKitProvider.DbConnection)
                 {
-                    //TODO
-                }
+                    var sql = SqlBuilder.GetSql();
+                    var paras = SqlBuilder.GetSqlParams();
 
-                return default(TResult);
-            });
+                    return conn.ExecuteAsync(sql, paras);
+                }
+            }
         }
     }
 }

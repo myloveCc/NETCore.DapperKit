@@ -29,7 +29,7 @@ namespace NETCore.DapperKit.Tests
                                       .InnerJoin<SysUserRole, SysRole>((ur, r) => ur.RoleId == r.Id);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT a.[Id] [Id],a.[Account] [Account],b.[RoleName] [UserRoleName] FROM [SysUser] a INNER JOIN [SysUserRole] c ON a.[Id] = c.[UserId] INNER JOIN [SysRole] b ON c.[RoleId] = b.[Id];", sql);
         }

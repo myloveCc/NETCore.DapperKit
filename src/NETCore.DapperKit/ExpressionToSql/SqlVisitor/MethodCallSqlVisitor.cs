@@ -55,7 +55,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     else
                     {
                         var memberExp = valueExp as MemberExpression;
-                        var value = GetExpreesionValue(memberExp);
+                        var value = TryGetExpreesionValue(memberExp);
                         sqlBuilder.AppendWhereSql($"{value}");
                     }
                     sqlBuilder.AppendWhereSql("%' ");
@@ -78,7 +78,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     else
                     {
                         var memberExp = valueExp as MemberExpression;
-                        var value = GetExpreesionValue(memberExp);
+                        var value = TryGetExpreesionValue(memberExp);
                         sqlBuilder.AppendWhereSql($"{value}");
                     }
                     sqlBuilder.AppendWhereSql("%' ");
@@ -107,7 +107,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     else
                     {
                         var memberExp = valueExp as MemberExpression;
-                        var value = GetExpreesionValue(memberExp);
+                        var value = TryGetExpreesionValue(memberExp);
                         sqlBuilder.AppendWhereSql($"{value}");
                     }
                     sqlBuilder.AppendWhereSql("' ");
@@ -130,7 +130,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     else
                     {
                         var memberExp = valueExp as MemberExpression;
-                        var value = GetExpreesionValue(memberExp);
+                        var value = TryGetExpreesionValue(memberExp);
                         sqlBuilder.AppendWhereSql($"{value}");
                     }
                     sqlBuilder.AppendWhereSql("' ");
@@ -159,7 +159,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     else
                     {
                         var memberExp = valueExp as MemberExpression;
-                        var value = GetExpreesionValue(memberExp);
+                        var value = TryGetExpreesionValue(memberExp);
                         sqlBuilder.AppendWhereSql($"{value}");
                     }
                     sqlBuilder.AppendWhereSql("%' ");
@@ -182,7 +182,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     else
                     {
                         var memberExp = valueExp as MemberExpression;
-                        var value = GetExpreesionValue(memberExp);
+                        var value = TryGetExpreesionValue(memberExp);
                         sqlBuilder.AppendWhereSql($"{value}");
                     }
                     sqlBuilder.AppendWhereSql("%' ");
@@ -211,7 +211,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
         protected override ISqlBuilder Delete(MethodCallExpression expression, ISqlBuilder sqlBuilder)
         {
-            var value = GetExpreesionValue(expression);
+            var value = TryGetExpreesionValue(expression);
             var sqlParamName = sqlBuilder.SetSqlParameter(value);
 
             sqlBuilder.AppendWhereSql($"{sqlParamName} ");

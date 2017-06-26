@@ -27,7 +27,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().OrderBy(m => m.CreateTime);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a ORDER BY a.[CreateTime] ASC;", sql);
         }
@@ -38,7 +38,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().OrderBy(m => new { m.Id, m.CreateTime });
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a ORDER BY a.[Id] ASC ,a.[CreateTime] ASC;", sql);
         }
@@ -49,7 +49,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().OrderBy(m => m.Id).ThenBy(m => m.CreateTime);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a ORDER BY a.[Id] ASC ,a.[CreateTime] ASC;", sql);
 
@@ -62,7 +62,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().OrderBy(m => m.Id).ThenByDescending(m => m.CreateTime);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a ORDER BY a.[Id] ASC ,a.[CreateTime] DESC;", sql);
         }
@@ -73,7 +73,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().OrderByDescending(m => m.Id).ThenBy(m => m.CreateTime);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a ORDER BY a.[Id] DESC ,a.[CreateTime] ASC;", sql);
         }
@@ -85,7 +85,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select(m => m.Id).OrderByDescending(m => m.Id).ThenByDescending(m => m.CreateTime);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT a.[Id] [Id] FROM [SysUser] a ORDER BY a.[Id] DESC ,a.[CreateTime] DESC;", sql);
         }

@@ -34,7 +34,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             //DateTime.Now
             else if (expression.NodeType == ExpressionType.Convert)
             {
-                var value = GetExpreesionValue(expression);
+                var value = TryGetExpreesionValue(expression);
                 var sqlParamName = sqlBuilder.SetSqlParameter(value);
                 sqlBuilder.AppendWhereSql($"{sqlParamName} ");
             }
@@ -69,7 +69,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             //DateTime.Now
             else if (expression.NodeType == ExpressionType.Convert)
             {
-                var value = GetExpreesionValue(expression);
+                var value = TryGetExpreesionValue(expression);
                 var sqlParamName = sqlBuilder.SetSqlParameter(value);
                 sqlBuilder.AppendWhereSql($"{sqlParamName} ");
             }

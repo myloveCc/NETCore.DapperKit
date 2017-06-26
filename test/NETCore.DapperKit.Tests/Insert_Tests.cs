@@ -26,8 +26,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Insert(() => new SysUser() { Account = "admin", Password = "123456", IsAdmin = false, UserRoleName = "Test", CreateTime = Convert.ToDateTime("1987-01-28") });
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var paramVals = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var paramVals = sqlBuilder.GetSqlParams();
 
             Assert.NotEmpty(sql);
             Assert.Equal("INSERT INTO [SysUser] ([Account],[Password],[IsAdmin],[CreateTime]) VALUES (@param0,@param1,@param2,@param3);", sql);
@@ -49,8 +49,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Insert(() => user);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var paramVals = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var paramVals = sqlBuilder.GetSqlParams();
 
             Assert.NotEmpty(sql);
             Assert.Equal("INSERT INTO [SysUser] ([Account],[Password],[IsAdmin],[CreateTime]) VALUES (@param0,@param1,@param2,@param3);", sql);

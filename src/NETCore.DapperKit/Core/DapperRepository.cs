@@ -202,14 +202,6 @@ namespace NETCore.DapperKit.Core
             }
         }
 
-
-        public T GetInfo<T>(Expression<Func<T, bool>> where) where T : class
-        {
-            Check.Argument.IsNotNull(where, nameof(where));
-            return _DapperKitProvider.DataSet<T>().Select().Where(where).FirstOrDefault<T>();
-        }
-
-
         /// <summary>
         /// Get data collection with sql and param
         /// </summary>
@@ -228,11 +220,6 @@ namespace NETCore.DapperKit.Core
             }
         }
 
-        public IEnumerable<T> GetList<T>(Expression<Func<T, bool>> where) where T : class
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// Transation 
         /// </summary>
@@ -249,13 +236,13 @@ namespace NETCore.DapperKit.Core
                         var commandTimeOut = _DapperKitProvider.Options.CommandTimeout;
 
                         action(conn, tran, commandTimeOut);
-                        //事务提交
+                        //tran commit
                         tran.Commit();
                         return true;
                     }
                     catch (Exception ex)
                     {
-                        //事务回滚
+                        //rollback if any exception
                         tran.Rollback();
                         return false;
                     }
@@ -489,7 +476,7 @@ namespace NETCore.DapperKit.Core
                             var commandTimeOut = _DapperKitProvider.Options.CommandTimeout;
 
                             action(conn, tran, commandTimeOut);
-                            //commit
+                            //tran commit
                             tran.Commit();
                             return true;
                         }

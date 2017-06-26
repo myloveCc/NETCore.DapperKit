@@ -32,11 +32,8 @@ namespace NETCore.DapperKit.Core
 
         T GetInfo<T>(string sql, DynamicParameters param = null, CommandType? type = null) where T : class;
 
-        T GetInfo<T>(Expression<Func<T, bool>> where) where T : class;
-
         IEnumerable<T> GetList<T>(string sql, DynamicParameters param = null, CommandType? type = null) where T : class;
 
-        IEnumerable<T> GetList<T>(Expression<Func<T, bool>> where) where T : class;
 
         IEnumerable<T> GetAll<T>() where T : class;
 

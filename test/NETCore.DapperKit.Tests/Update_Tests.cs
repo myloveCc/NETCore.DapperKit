@@ -25,8 +25,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Update(() => new SysUser() { Account = "AllUpdate", Password = "123456", IsAdmin = true });
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.NotEmpty(sql);
             Assert.Equal("UPDATE [SysUser] SET [Account] = @param0,[Password] = @param1,[IsAdmin] = @param2;", sql);
@@ -41,8 +41,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Update(() => new SysUser() { Account = "AllUpdate", Password = "123456", IsAdmin = true, UserRoleName = "Test" });
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.NotEmpty(sql);
             Assert.Equal("UPDATE [SysUser] SET [Account] = @param0,[Password] = @param1,[IsAdmin] = @param2;", sql);
@@ -57,8 +57,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Update(() => new SysUser() { Id = 1, Account = "AllUpdate", Password = "123456", IsAdmin = true });
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.NotEmpty(sql);
             Assert.Equal("UPDATE [SysUser] SET [Account] = @param0,[Password] = @param1,[IsAdmin] = @param2;", sql);
@@ -73,8 +73,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Update(() => new SysUser() { Id = 1, Account = "AllUpdate", Password = "123456", IsAdmin = true }).Where(m => m.Id == 1);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.NotEmpty(sql);
             Assert.Equal("UPDATE [SysUser] SET [Account] = @param0,[Password] = @param1,[IsAdmin] = @param2 WHERE [Id] = @param3;", sql);
