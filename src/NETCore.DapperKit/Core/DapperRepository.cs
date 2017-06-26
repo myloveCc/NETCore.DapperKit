@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Dapper;
 using NETCore.DapperKit.Shared;
 using NETCore.DapperKit.Extensions;
-using NETCore.DapperKit.ExpressionToSql.Extensions;
 using System.Linq.Expressions;
 
 namespace NETCore.DapperKit.Core
