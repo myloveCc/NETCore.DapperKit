@@ -50,6 +50,28 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             }
         }
 
+        private bool IsNodeTypeSetValue(ExpressionType expressionNodeType)
+        {
+            switch (expressionNodeType)
+            {
+                case ExpressionType.And:
+                case ExpressionType.AndAlso:
+                case ExpressionType.Or:
+                case ExpressionType.OrElse:
+                    return false;
+                case ExpressionType.Equal:
+                case ExpressionType.GreaterThan:
+                case ExpressionType.GreaterThanOrEqual:
+                case ExpressionType.NotEqual:
+                case ExpressionType.LessThan:
+                case ExpressionType.LessThanOrEqual:
+                    return true;
+
+                default:
+                    throw new NotImplementedException("Unimplemented expressionType:" + expressionNodeType);
+            }
+        }
+
         private static int GetOperatorPrecedence(Expression node)
         {
             switch (node.NodeType)
@@ -306,6 +328,21 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     var sqlParamName = sqlBuilder.SetSqlParameter(1);
                     sqlBuilder.AppendJoinSql($"{sqlParamName} ");
                 }
+                else if(expressionRight is MemberExpression && IsNodeTypeSetValue(expression.NodeType))
+                {
+                    var memberExp = expressionRight as MemberExpression;
+                    var value = TryGetExpreesionValue(memberExp);
+
+                    if (value != null)
+                    {
+                        var sqlParamName = sqlBuilder.SetSqlParameter(value);
+                        sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+                    }
+                    else
+                    {
+                        SqlVistorProvider.Join(expression.Right, sqlBuilder);
+                    }
+                }
                 else
                 {
                     SqlVistorProvider.Join(expression.Right, sqlBuilder);
@@ -393,7 +430,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     sqlBuilder.AppendWhereSql("( ");
                 }
 
-                if (expressionRight is MemberExpression && expressionRight.Type == typeof(bool) && expressionRight.NodeType == ExpressionType.MemberAccess && expression.NodeType == ExpressionType.AndAlso)
+                if (expressionRight is MemberExpression && expressionRight.Type == typeof(bool) && expression.NodeType == ExpressionType.AndAlso)
                 {
                     //（m=>m.IsAdmin) 
                     SqlVistorProvider.Where(expressionRight, sqlBuilder);
@@ -402,6 +439,21 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
                     var sqlParamName = sqlBuilder.SetSqlParameter(1);
                     sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+                }
+                else if (expressionRight is MemberExpression && IsNodeTypeSetValue(expression.NodeType))
+                {
+                    var memberExp = expressionRight as MemberExpression;
+                    var value = TryGetExpreesionValue(memberExp);
+                    if (value != null)
+                    {
+                        var sqlParamName = sqlBuilder.SetSqlParameter(value);
+                        sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+                    }
+                    else
+                    {
+                        SqlVistorProvider.Join(expression.Right, sqlBuilder);
+                    }
+
                 }
                 else
                 {
@@ -456,7 +508,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     sqlParamName = sqlBuilder.SetSqlParameter(value);
                 }
                 else
-                {  
+                {
                     //（m=>m.IsAdmin) 
                     sqlParamName = sqlBuilder.SetSqlParameter(1);
                 }
@@ -491,7 +543,7 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                     sqlBuilder.AppendWhereSql("( ");
                 }
 
-                if (expressionRight is MemberExpression && expressionRight.Type == typeof(bool) && expressionRight.NodeType == ExpressionType.MemberAccess && expression.NodeType == ExpressionType.AndAlso)
+                if (expressionRight is MemberExpression && expressionRight.Type == typeof(bool) && expression.NodeType == ExpressionType.AndAlso)
                 {
                     //（m=>m.IsAdmin) 
                     SqlVistorProvider.Where(expressionRight, sqlBuilder);
@@ -500,6 +552,20 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
 
                     var sqlParamName = sqlBuilder.SetSqlParameter(1);
                     sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+                }
+                else if (expressionRight is MemberExpression && IsNodeTypeSetValue(expression.NodeType))
+                {
+                    var memberExp = expressionRight as MemberExpression;
+                    var value = TryGetExpreesionValue(memberExp);
+                    if (value != null)
+                    {
+                        var sqlParamName = sqlBuilder.SetSqlParameter(value);
+                        sqlBuilder.AppendWhereSql($"{sqlParamName} ");
+                    }
+                    else
+                    {
+                        SqlVistorProvider.Join(expression.Right, sqlBuilder);
+                    }
                 }
                 else
                 {

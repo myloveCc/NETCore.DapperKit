@@ -204,6 +204,24 @@ namespace NETCore.DapperKit.Tests
             Assert.Equal(0, sqlParams["@param1"]);
         }
 
+        [Fact(DisplayName = "Select where by object propety test")]
+        public void Select_PraraObj_Test()
+        {
+
+            var paraObj = new SysUser() { Account = "admin", IsAdmin = true };
+
+            var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account == paraObj.Account && m.IsAdmin == paraObj.IsAdmin);
+
+            var sqlBuilder = query.SqlBuilder;
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
+
+            Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] = @param0 AND a.[IsAdmin] = @param1;", sql);
+            Assert.Equal(2, sqlParams.Count);
+            Assert.Equal(1, sqlParams["@param1"]);
+        }
+
+
         [Fact(DisplayName = "Select page data test")]
         public void Select_Page_Test()
         {
@@ -217,6 +235,8 @@ namespace NETCore.DapperKit.Tests
             Assert.Equal(2, sqlParams.Count);
             Assert.Equal(0, sqlParams["@param1"]);
         }
+
+
 
 
     }

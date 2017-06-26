@@ -37,13 +37,11 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         {
             using (SqlBuilder)
             {
-                using (var conn = DapperKitProvider.DbConnection)
-                {
-                    var sql = SqlBuilder.GetSql();
-                    var paras = SqlBuilder.GetSqlParams();
+                var conn = DapperKitProvider.DbConnection;
+                var sql = SqlBuilder.GetSql();
+                var paras = SqlBuilder.GetSqlParams();
 
-                    return conn.QuerySingleAsync<TResult>(sql, paras);
-                }
+                return conn.QuerySingleAsync<TResult>(sql, paras);
             }
         }
 
@@ -65,13 +63,10 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         {
             using (SqlBuilder)
             {
-                using (var conn = DapperKitProvider.DbConnection)
-                {
-                    var sql = SqlBuilder.GetSql();
-                    var paras = SqlBuilder.GetSqlParams();
-
-                    return conn.QueryFirstOrDefaultAsync<TResult>(sql, paras);
-                }
+                var conn = DapperKitProvider.DbConnection;
+                var sql = SqlBuilder.GetSql();
+                var paras = SqlBuilder.GetSqlParams();
+                return conn.QueryFirstOrDefaultAsync<TResult>(sql, paras);
             }
         }
 
@@ -93,13 +88,11 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
         {
             using (SqlBuilder)
             {
-                using (var conn = DapperKitProvider.DbConnection)
-                {
-                    var sql = SqlBuilder.GetSql();
-                    var paras = SqlBuilder.GetSqlParams();
+                var conn = DapperKitProvider.DbConnection;
 
-                    return conn.QueryAsync<TResult>(sql, paras);
-                }
+                var sql = SqlBuilder.GetSql();
+                var paras = SqlBuilder.GetSqlParams();
+                return conn.QueryAsync<TResult>(sql, paras);
             }
         }
     }
