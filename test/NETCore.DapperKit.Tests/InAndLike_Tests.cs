@@ -26,7 +26,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Id.In(new List<int> { 1, 2, 3 }));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Id] IN (1,2,3);", sql);
         }
@@ -38,8 +38,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Id.In(new List<int> { 1, 2, 3 }) && m.IsAdmin);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Id] IN (1,2,3) AND a.[IsAdmin] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -54,7 +54,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Id.In(ids));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Id] IN (1,2,3);", sql);
         }
@@ -65,7 +65,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.In(new List<string> { "admin", "test", "dev" }));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] IN ('admin','test','dev');", sql);
         }
@@ -78,7 +78,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.In(accounts));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] IN ('admin','test','dev');", sql);
         }
@@ -89,7 +89,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.Contains("admin"));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE '%admin%';", sql);
         }
@@ -101,7 +101,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.Contains(containStr));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE '%admin%';", sql);
         }
@@ -112,8 +112,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.Contains("admin") && m.IsAdmin);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE '%admin%' AND a.[IsAdmin] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -126,7 +126,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.Like("admin"));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE '%admin%';", sql);
         }
@@ -137,8 +137,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.Like("admin") && m.IsAdmin);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE '%admin%' AND a.[IsAdmin] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -151,7 +151,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.LikeLeft("admin"));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE '%admin';", sql);
         }
@@ -162,8 +162,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.LikeLeft("admin") && m.IsAdmin);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE '%admin' AND a.[IsAdmin] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);
@@ -176,7 +176,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.LikeRight("admin"));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE 'admin%';", sql);
         }
@@ -187,8 +187,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.LikeRight("admin") && m.IsAdmin);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] LIKE 'admin%' AND a.[IsAdmin] = @param0;", sql);
             Assert.Equal(1, sqlParams.Count);

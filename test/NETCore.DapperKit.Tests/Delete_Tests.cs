@@ -25,7 +25,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete();
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("DELETE [SysUser];", sql);
         }
@@ -36,7 +36,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("DELETE [SysUser] WHERE [Id] = @param0 AND [Account] = @param1;", sql);
         }
@@ -47,8 +47,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => m.IsAdmin && m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("DELETE [SysUser] WHERE [IsAdmin] = @param0 AND [Id] = @param1 AND [Account] = @param2;", sql);
             Assert.Equal(1, sqlParams["@param0"]);
@@ -60,8 +60,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => m.IsAdmin == true && m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("DELETE [SysUser] WHERE [IsAdmin] = @param0 AND [Id] = @param1 AND [Account] = @param2;", sql);
             Assert.Equal(1, sqlParams["@param0"]);
@@ -74,8 +74,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => !m.IsAdmin && m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("DELETE [SysUser] WHERE [IsAdmin] = @param0 AND [Id] = @param1 AND [Account] = @param2;", sql);
             Assert.Equal(0, sqlParams["@param0"]);
@@ -87,8 +87,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => m.IsAdmin == false && m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("DELETE [SysUser] WHERE [IsAdmin] = @param0 AND [Id] = @param1 AND [Account] = @param2;", sql);
             Assert.Equal(0, sqlParams["@param0"]);
@@ -100,8 +100,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => m.CreateTime >= Convert.ToDateTime("1987-01-28"));
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("DELETE [SysUser] WHERE [CreateTime] >= @param0;", sql);
             Assert.Equal("1987-01-28", Convert.ToDateTime(sqlParams["@param0"]).ToString("yyyy-MM-dd"));
@@ -114,8 +114,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => m.CreateTime >= time);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("DELETE [SysUser] WHERE [CreateTime] >= @param0;", sql);
             Assert.Equal("1987-01-28", Convert.ToDateTime(sqlParams["@param0"]).ToString("yyyy-MM-dd"));
@@ -127,8 +127,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => m.CreateTime >= DateTime.Now);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("DELETE [SysUser] WHERE [CreateTime] >= @param0;", sql);
             Assert.Equal(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),Convert.ToDateTime(sqlParams["@param0"]).ToString("yyyy-MM-dd HH:mm:ss"));
@@ -141,8 +141,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Delete(m => m.CreateTime == null);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var sqlParams = sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var sqlParams = sqlBuilder.GetSqlParams();
 
             Assert.Equal("DELETE [SysUser] WHERE [CreateTime] IS @param0;", sql);
             Assert.Null(sqlParams["@param0"]);

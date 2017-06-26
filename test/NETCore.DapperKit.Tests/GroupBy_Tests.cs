@@ -28,7 +28,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Count(m => m.Id).GroupBy(m => m.IsAdmin);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT COUNT([Id]),[IsAdmin] FROM [SysUser] GROUP BY [IsAdmin];", sql);
         }
@@ -39,7 +39,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Count(m => new { UserCount = m.Id }).GroupBy(m => new { AmdinType = m.IsAdmin });
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT COUNT([Id]) [UserCount],[IsAdmin] [AmdinType] FROM [SysUser] GROUP BY [IsAdmin];", sql);
         }
@@ -50,8 +50,8 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Count(m => new { UserCount = m.Id }).GroupBy(m => new { AmdinType = m.IsAdmin }).Where(m => m.Id == 1);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
-            var paras= sqlBuilder.GetSqlParameters();
+            var sql = sqlBuilder.GetSql();
+            var paras= sqlBuilder.GetSqlParams();
 
             Assert.Equal("SELECT COUNT([Id]) [UserCount],[IsAdmin] [AmdinType] FROM [SysUser] WHERE [Id] = @param0 GROUP BY [IsAdmin];", sql);
             Assert.Equal(1, paras.Count);

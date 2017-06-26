@@ -26,7 +26,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Count();
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT COUNT(*) FROM [SysUser];", sql);
         }
@@ -37,7 +37,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Count(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT COUNT([Id]) FROM [SysUser];", sql);
         }
@@ -48,7 +48,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Count(m => m.Id).Where(m => m.Id >= 10);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT COUNT([Id]) FROM [SysUser] WHERE [Id] >= @param0;", sql);
         }
@@ -59,7 +59,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Avg(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT AVG([Id]) FROM [SysUser];", sql);
         }
@@ -70,7 +70,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Avg(m => m.Id).Where(m => m.Id >= 10);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT AVG([Id]) FROM [SysUser] WHERE [Id] >= @param0;", sql);
         }
@@ -82,7 +82,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Sum(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT SUM([Id]) FROM [SysUser];", sql);
         }
@@ -93,7 +93,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Sum(m => m.Id).Where(m => m.Id >= 10);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT SUM([Id]) FROM [SysUser] WHERE [Id] >= @param0;", sql);
         }
@@ -104,7 +104,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Min(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT MIN([Id]) FROM [SysUser];", sql);
         }
@@ -115,7 +115,7 @@ namespace NETCore.DapperKit.Tests
             var query = _DapperContext.DataSet<SysUser>().Min(m => m.Id).Where(m => m.Id >= 10);
             var sqlBuilder = query.SqlBuilder;
 
-            var sql = sqlBuilder.GetSqlString();
+            var sql = sqlBuilder.GetSql();
 
             Assert.Equal("SELECT MIN([Id]) FROM [SysUser] WHERE [Id] >= @param0;", sql);
         }

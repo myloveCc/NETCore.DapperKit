@@ -96,14 +96,16 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
                 var columnName = $"{tablAlias}{sqlBuilder.Formate(memberExp.Member.Name)}";
 
                 MemberInfo member = memberAss.Member;
-                var filedName = $"{sqlBuilder.Formate(member.Name)}";
+                var fieldName = $"{sqlBuilder.Formate(member.Name)}";
 
-                sqlBuilder.AddSelectColumn($"{columnName} {filedName}");
+                sqlBuilder.AddSelectColumn($"{columnName} {fieldName}");
+                sqlBuilder.AddSelectPageColumn(fieldName);
             }
 
             if (!isHasAnyColumn)
             {
                 sqlBuilder.AddSelectColumn("* ");
+                sqlBuilder.AddSelectPageColumn("* ");
             }
 
             return sqlBuilder;
