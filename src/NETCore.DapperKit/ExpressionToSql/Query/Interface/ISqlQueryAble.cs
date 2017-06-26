@@ -10,8 +10,8 @@ namespace NETCore.DapperKit.ExpressionToSql.Query.Interface
     {
         ISqlBuilder SqlBuilder { get; }
 
-        TResult Exect<TResult>();
+        int Exect();
 
-        Task<TResult> ExectAsync<TResult>();
+        Task<int> ExectAsync();
     }
 }

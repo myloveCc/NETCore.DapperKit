@@ -533,7 +533,24 @@ namespace NETCore.DapperKit.ExpressionToSql.Core
         #region Dispose
         public void Dispose()
         {
-
+            _QueueTableAlias = null;
+            _TableNames = null;
+            _SqlParameters = null;
+            _SelectPageAlaises = null;
+            _SelectAlaises = null;
+            _CalculateAlaises = null;
+            _InsertSqlBuilder = null;
+            _DeleteSqlBuilder = null;
+            _UpdateSqlBuilder = null;
+            _SelectSqlBuilder = null;
+            _CalculateSqlBuilder = null;
+            _WhereSqlBuilder = null;
+            _JoinSqlBuilder = null;
+            _OrderSqlBuilder = null;
+            _GroupSqlBuilder = null;
+            SkipNum = 0;
+            TakeNum = 0;
+            _IsSelectMultiTable = false;
         }
         #endregion
 

@@ -19,25 +19,88 @@ namespace NETCore.DapperKit.ExpressionToSql.Query
             DapperKitProvider = provider;
         }
 
-
-        public TResult FirstOrDefault<TResult>()
+        public TResult Single<TResult>() where TResult : class
         {
-            throw new NotImplementedException();
+            using (SqlBuilder)
+            {
+                using (var conn = DapperKitProvider.DbConnection)
+                {
+                    var sql = SqlBuilder.GetSql();
+                    var paras = SqlBuilder.GetSqlParams();
+
+                    return conn.QuerySingle<TResult>(sql, paras);
+                }
+            }
         }
 
-        public Task<TResult> FirstOrDefaultAsync<TResult>()
+        public Task<TResult> SingleAsync<TResult>() where TResult : class
         {
-            throw new NotImplementedException();
+            using (SqlBuilder)
+            {
+                using (var conn = DapperKitProvider.DbConnection)
+                {
+                    var sql = SqlBuilder.GetSql();
+                    var paras = SqlBuilder.GetSqlParams();
+
+                    return conn.QuerySingleAsync<TResult>(sql, paras);
+                }
+            }
         }
 
-        public IEnumerable<TResult> ToList<TResult>()
+        public TResult FirstOrDefault<TResult>() where TResult : class
         {
-            throw new NotImplementedException();
+            using (SqlBuilder)
+            {
+                using (var conn = DapperKitProvider.DbConnection)
+                {
+                    var sql = SqlBuilder.GetSql();
+                    var paras = SqlBuilder.GetSqlParams();
+
+                    return conn.QueryFirstOrDefault<TResult>(sql, paras);
+                }
+            }
         }
 
-        public Task<IEnumerable<TResult>> ToListAsync<TResult>()
+        public Task<TResult> FirstOrDefaultAsync<TResult>() where TResult : class
         {
-            throw new NotImplementedException();
+            using (SqlBuilder)
+            {
+                using (var conn = DapperKitProvider.DbConnection)
+                {
+                    var sql = SqlBuilder.GetSql();
+                    var paras = SqlBuilder.GetSqlParams();
+
+                    return conn.QueryFirstOrDefaultAsync<TResult>(sql, paras);
+                }
+            }
+        }
+
+        public IEnumerable<TResult> ToList<TResult>() where TResult : class
+        {
+            using (SqlBuilder)
+            {
+                using (var conn = DapperKitProvider.DbConnection)
+                {
+                    var sql = SqlBuilder.GetSql();
+                    var paras = SqlBuilder.GetSqlParams();
+
+                    return conn.Query<TResult>(sql, paras);
+                }
+            }
+        }
+
+        public Task<IEnumerable<TResult>> ToListAsync<TResult>() where TResult : class
+        {
+            using (SqlBuilder)
+            {
+                using (var conn = DapperKitProvider.DbConnection)
+                {
+                    var sql = SqlBuilder.GetSql();
+                    var paras = SqlBuilder.GetSqlParams();
+
+                    return conn.QueryAsync<TResult>(sql, paras);
+                }
+            }
         }
     }
 }

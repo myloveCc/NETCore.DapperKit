@@ -12,12 +12,17 @@ namespace NETCore.DapperKit.ExpressionToSql.Query.Interface
 
         IDapperKitProvider DapperKitProvider { get; }
 
-        TResult FirstOrDefault<TResult>();
 
-        Task<TResult> FirstOrDefaultAsync<TResult>();
+        TResult Single<TResult>() where TResult : class;
 
-        IEnumerable<TResult> ToList<TResult>();
+        Task<TResult> SingleAsync<TResult>() where TResult : class;
 
-        Task<IEnumerable<TResult>> ToListAsync<TResult>();
+        TResult FirstOrDefault<TResult>() where TResult : class;
+
+        Task<TResult> FirstOrDefaultAsync<TResult>() where TResult : class;
+
+        IEnumerable<TResult> ToList<TResult>() where TResult : class;
+
+        Task<IEnumerable<TResult>> ToListAsync<TResult>() where TResult : class;
     }
 }

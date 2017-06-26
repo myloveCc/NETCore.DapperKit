@@ -11,7 +11,6 @@ namespace NETCore.DapperKit.ExpressionToSql.Extensions
     {
         public static ISqlQueryProvider<T> DataSet<T>(this IDapperKitProvider provider) where T : class
         {
-            //TODO
             return new SqlQueryProvider<T>(provider);
         }
     }
