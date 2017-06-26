@@ -9,8 +9,11 @@
     <Description>Dapper extensions, suport expression to sql ,so you can use dapper like ef.</Description>
     <Copyright>Copyright 2017 (c) Lvcc. All rights reserved</Copyright>
     <PackageProjectUrl>https://github.com/myloveCc/NETCore.DapperKit</PackageProjectUrl>
-    <RepositoryUrl>git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/myloveCc/NETCore.DapperKit</RepositoryUrl>
     <PackageTags>Dapper ExrepssionToSql</PackageTags>
+    <PackageLicenseUrl>https://github.com/myloveCc/NETCore.DapperKit/blob/master/License</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>NETCore.DapperKit 1.1.0-beta1</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
