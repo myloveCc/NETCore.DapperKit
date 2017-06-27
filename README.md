@@ -73,8 +73,8 @@ public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = 
 }
 ```
 
-#LICENSE
+# LICENSE
 
-[MIT LICESE]
+[MIT LICESE](https://github.com/myloveCc/NETCore.DapperKit/blob/master/License)
 
 
