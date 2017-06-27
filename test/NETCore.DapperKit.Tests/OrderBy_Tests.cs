@@ -13,10 +13,10 @@ namespace NETCore.DapperKit.Tests
 
         public OrderBy_Tests()
         {
-            _DapperContext = new DapperContext(new Infrastructure.Internal.DapperKitOptions()
+            _DapperContext = new DapperContext(new DapperKitOptions()
             {
                 ConnectionString = "127.0.0.1",
-                DatabaseType = Infrastructure.Internal.DatabaseType.SQLServer
+                DatabaseType = DatabaseType.SQLServer
             });
         }
 
