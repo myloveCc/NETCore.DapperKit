@@ -10,6 +10,24 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
     {
         protected override ISqlBuilder In(NewArrayExpression expression, ISqlBuilder sqlBuilder)
         {
+            var ins = new List<string>();
+            foreach (var expressionItem in expression.Expressions)
+            {
+                if (expressionItem is ConstantExpression)
+                {
+                    var constantExp = expressionItem as ConstantExpression;
+                    if (constantExp.Type.Name == "String")
+                    {
+                        ins.Add($"'{constantExp.Value}'");
+                    }
+                    else
+                    {
+                        ins.Add($"{constantExp.Value}");
+                    }
+                }
+            }
+            sqlBuilder.AppendWhereSql($"({string.Join(",", ins)}) ");
+
             return sqlBuilder;
         }
     }

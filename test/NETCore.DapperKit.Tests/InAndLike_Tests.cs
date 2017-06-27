@@ -32,6 +32,17 @@ namespace NETCore.DapperKit.Tests
         }
 
 
+        [Fact(DisplayName = "Select in new int array test")]
+        public void Select_InNewArray_Test()
+        {
+            var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Id.In(new int[] { 1, 2, 3 }));
+            var sqlBuilder = query.SqlBuilder;
+
+            var sql = sqlBuilder.GetSql();
+
+            Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Id] IN (1,2,3);", sql);
+        }
+
         [Fact(DisplayName = "Select where in new int list test")]
         public void Select_Where_InNewList_Test()
         {
@@ -74,6 +85,19 @@ namespace NETCore.DapperKit.Tests
         public void Select_InStringList_Test()
         {
             var accounts = new List<string> { "admin", "test", "dev" };
+
+            var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.In(accounts));
+            var sqlBuilder = query.SqlBuilder;
+
+            var sql = sqlBuilder.GetSql();
+
+            Assert.Equal("SELECT * FROM [SysUser] a WHERE a.[Account] IN ('admin','test','dev');", sql);
+        }
+
+        [Fact(DisplayName = "Select in array string test")]
+        public void Select_InStringArray_Test()
+        {
+            var accounts = new string[] { "admin", "test", "dev" };
 
             var query = _DapperContext.DataSet<SysUser>().Select().Where(m => m.Account.In(accounts));
             var sqlBuilder = query.SqlBuilder;
