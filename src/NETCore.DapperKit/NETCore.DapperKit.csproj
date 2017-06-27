@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.1.0-beta1</Version>
+    <Version>1.1.0-beta2</Version>
     <Company>Lvcc</Company>
     <Authors>Lvcc</Authors>
     <Description>Dapper extensions, suport expression to sql ,so you can use dapper like ef.</Description>
@@ -13,7 +13,7 @@
     <PackageTags>Dapper ExrepssionToSql</PackageTags>
     <PackageLicenseUrl>https://github.com/myloveCc/NETCore.DapperKit/blob/master/License</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>NETCore.DapperKit 1.1.0-beta1</PackageReleaseNotes>
+    <PackageReleaseNotes>NETCore.DapperKit 1.1.0-beta2</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

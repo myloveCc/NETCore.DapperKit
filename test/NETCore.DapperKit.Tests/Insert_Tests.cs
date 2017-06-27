@@ -1,18 +1,18 @@
 using System;
 using Xunit;
 using NETCore.DapperKit.Extensions;
-using NETCore.DapperKit.ExpressionToSql.Extensions;
+using NETCore.DapperKit.ExpressionVisitor.Extensions;
 using NETCore.DapperKit.Tests.Model;
 
 namespace NETCore.DapperKit.Tests
 {
     public class Insert_Tests
     {
-        private readonly IDapperKitProvider _DapperContext;
+        private readonly IDapperContext _DapperContext;
 
         public Insert_Tests()
         {
-            _DapperContext = new DapperKitProvider(new Infrastructure.Internal.DapperKitOptions()
+            _DapperContext = new DapperContext(new Infrastructure.Internal.DapperKitOptions()
             {
                 ConnectionString = "127.0.0.1",
                 DatabaseType = Infrastructure.Internal.DatabaseType.SQLServer
@@ -23,7 +23,7 @@ namespace NETCore.DapperKit.Tests
         public void Insert_New_Test()
         {
 
-            var query = _DapperContext.DataSet<SysUser>().Insert(() => new SysUser() { Account = "admin", Password = "123456", IsAdmin = false, UserRoleName = "Test", CreateTime = Convert.ToDateTime("1987-01-28") });
+            var query = _DapperContext.DbSet<SysUser>().Insert(() => new SysUser() { Account = "admin", Password = "123456", IsAdmin = false, UserRoleName = "Test", CreateTime = Convert.ToDateTime("1987-01-28") });
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -46,7 +46,7 @@ namespace NETCore.DapperKit.Tests
                 CreateTime = Convert.ToDateTime("1987-01-28")
             };
 
-            var query = _DapperContext.DataSet<SysUser>().Insert(() => user);
+            var query = _DapperContext.DbSet<SysUser>().Insert(() => user);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();

@@ -1,7 +1,5 @@
 using System;
 using Xunit;
-using NETCore.DapperKit.Extensions;
-using NETCore.DapperKit.ExpressionToSql.Extensions;
 using NETCore.DapperKit.Tests.Model;
 
 
@@ -9,11 +7,11 @@ namespace NETCore.DapperKit.Tests
 {
     public class Calculate_Tests
     {
-        private readonly IDapperKitProvider _DapperContext;
+        private readonly IDapperContext _DapperContext;
 
         public Calculate_Tests()
         {
-            _DapperContext = new DapperKitProvider(new Infrastructure.Internal.DapperKitOptions()
+            _DapperContext = new DapperContext(new DapperKitOptions()
             {
                 ConnectionString = "127.0.0.1",
                 DatabaseType = Infrastructure.Internal.DatabaseType.SQLServer
@@ -23,7 +21,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select count test")]
         public void Select_Count_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Count();
+            var query = _DapperContext.DbSet<SysUser>().Count();
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -34,7 +32,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select count column test")]
         public void Select_Count_Column_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Count(m => m.Id);
+            var query = _DapperContext.DbSet<SysUser>().Count(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -45,7 +43,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select count where test")]
         public void Select_Count_Where_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Count(m => m.Id).Where(m => m.Id >= 10);
+            var query = _DapperContext.DbSet<SysUser>().Count(m => m.Id).Where(m => m.Id >= 10);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -56,7 +54,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select avg column test")]
         public void Select_Avg_Column_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Avg(m => m.Id);
+            var query = _DapperContext.DbSet<SysUser>().Avg(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -67,7 +65,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select avg where test")]
         public void Select_Avg_Where_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Avg(m => m.Id).Where(m => m.Id >= 10);
+            var query = _DapperContext.DbSet<SysUser>().Avg(m => m.Id).Where(m => m.Id >= 10);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -79,7 +77,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select sum column test")]
         public void Select_Sum_Column_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Sum(m => m.Id);
+            var query = _DapperContext.DbSet<SysUser>().Sum(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -90,7 +88,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select sum where test")]
         public void Select_Sum_Where_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Sum(m => m.Id).Where(m => m.Id >= 10);
+            var query = _DapperContext.DbSet<SysUser>().Sum(m => m.Id).Where(m => m.Id >= 10);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -101,7 +99,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select min column test")]
         public void Select_Min_Column_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Min(m => m.Id);
+            var query = _DapperContext.DbSet<SysUser>().Min(m => m.Id);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -112,7 +110,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Select min where test")]
         public void Select_Min_Where_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Min(m => m.Id).Where(m => m.Id >= 10);
+            var query = _DapperContext.DbSet<SysUser>().Min(m => m.Id).Where(m => m.Id >= 10);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();

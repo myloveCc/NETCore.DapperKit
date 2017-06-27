@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 using NETCore.DapperKit.Extensions;
-using NETCore.DapperKit.ExpressionToSql.Extensions;
+using NETCore.DapperKit.ExpressionVisitor.Extensions;
 using NETCore.DapperKit.Tests.Model;
 using System.Collections.Generic;
 
@@ -11,11 +11,11 @@ namespace NETCore.DapperKit.Tests
     public class GroupBy_Tests
     {
 
-        private readonly IDapperKitProvider _DapperContext;
+        private readonly IDapperContext _DapperContext;
 
         public GroupBy_Tests()
         {
-            _DapperContext = new DapperKitProvider(new Infrastructure.Internal.DapperKitOptions()
+            _DapperContext = new DapperContext(new DapperKitOptions()
             {
                 ConnectionString = "127.0.0.1",
                 DatabaseType = Infrastructure.Internal.DatabaseType.SQLServer
@@ -25,7 +25,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Calculate group by test")]
         public void Calculate_Groupby_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Count(m => m.Id).GroupBy(m => m.IsAdmin);
+            var query = _DapperContext.DbSet<SysUser>().Count(m => m.Id).GroupBy(m => m.IsAdmin);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -36,7 +36,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Calculate group by alias test ")]
         public void Calculate_Groupby_Alias_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Count(m => new { UserCount = m.Id }).GroupBy(m => new { AmdinType = m.IsAdmin });
+            var query = _DapperContext.DbSet<SysUser>().Count(m => new { UserCount = m.Id }).GroupBy(m => new { AmdinType = m.IsAdmin });
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -47,7 +47,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Calculate group by and where test")]
         public void Select_Groupby_Where_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Count(m => new { UserCount = m.Id }).GroupBy(m => new { AmdinType = m.IsAdmin }).Where(m => m.Id == 1);
+            var query = _DapperContext.DbSet<SysUser>().Count(m => new { UserCount = m.Id }).GroupBy(m => new { AmdinType = m.IsAdmin }).Where(m => m.Id == 1);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();

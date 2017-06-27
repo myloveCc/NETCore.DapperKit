@@ -1,18 +1,18 @@
 using System;
 using Xunit;
 using NETCore.DapperKit.Extensions;
-using NETCore.DapperKit.ExpressionToSql.Extensions;
+using NETCore.DapperKit.ExpressionVisitor.Extensions;
 using NETCore.DapperKit.Tests.Model;
 
 namespace NETCore.DapperKit.Tests
 {
     public class Update_Tests
     {
-        private readonly IDapperKitProvider _DapperContext;
+        private readonly IDapperContext _DapperContext;
 
         public Update_Tests()
         {
-            _DapperContext = new DapperKitProvider(new Infrastructure.Internal.DapperKitOptions()
+            _DapperContext = new DapperContext(new DapperKitOptions()
             {
                 ConnectionString = "127.0.0.1",
                 DatabaseType = Infrastructure.Internal.DatabaseType.SQLServer
@@ -22,7 +22,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Update all test")]
         public void Update_All_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Update(() => new SysUser() { Account = "AllUpdate", Password = "123456", IsAdmin = true });
+            var query = _DapperContext.DbSet<SysUser>().Update(() => new SysUser() { Account = "AllUpdate", Password = "123456", IsAdmin = true });
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -38,7 +38,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Update exclude not table column test")]
         public void Update_Exclude_UnColumn_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Update(() => new SysUser() { Account = "AllUpdate", Password = "123456", IsAdmin = true, UserRoleName = "Test" });
+            var query = _DapperContext.DbSet<SysUser>().Update(() => new SysUser() { Account = "AllUpdate", Password = "123456", IsAdmin = true, UserRoleName = "Test" });
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -54,7 +54,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Update exclude key column test")]
         public void Update_Exclude_KeyColumn_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Update(() => new SysUser() { Id = 1, Account = "AllUpdate", Password = "123456", IsAdmin = true });
+            var query = _DapperContext.DbSet<SysUser>().Update(() => new SysUser() { Id = 1, Account = "AllUpdate", Password = "123456", IsAdmin = true });
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -70,7 +70,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Update new object where test")]
         public void Update_New_Where_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Update(() => new SysUser() { Id = 1, Account = "AllUpdate", Password = "123456", IsAdmin = true }).Where(m => m.Id == 1);
+            var query = _DapperContext.DbSet<SysUser>().Update(() => new SysUser() { Id = 1, Account = "AllUpdate", Password = "123456", IsAdmin = true }).Where(m => m.Id == 1);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();

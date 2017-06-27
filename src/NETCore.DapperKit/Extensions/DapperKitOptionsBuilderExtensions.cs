@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using NETCore.DapperKit.Shared;
 using NETCore.DapperKit.Infrastructure;
-using NETCore.DapperKit.Infrastructure.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace NETCore.DapperKit.Extensions

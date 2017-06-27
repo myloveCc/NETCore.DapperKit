@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NETCore.DapperKit.Extensions;
-using NETCore.DapperKit.Infrastructure.Internal;
 
 namespace NETCore.DapperKit.Web
 {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NETCore.DapperKit.Extensions;
 using NETCore.DapperKit.Web.ViewModels;
 using NETCore.DapperKit.Web.Model;
 
@@ -14,11 +13,11 @@ namespace NETCore.DapperKit.Web.Controllers
     public class AccountController : Controller
     {
 
-        private readonly IDapperKitProvider _DapperKit;
+        private readonly IDapperContext _DapperContext;
 
-        public AccountController(IDapperKitProvider dapperKitProvider)
+        public AccountController(IDapperContext context)
         {
-            _DapperKit = dapperKitProvider;
+            _DapperContext = context;
         }
 
         // GET: /<controller>/
@@ -26,7 +25,6 @@ namespace NETCore.DapperKit.Web.Controllers
         {
             return View();
         }
-
 
         /// <summary>
         /// 登录方法
@@ -43,7 +41,7 @@ namespace NETCore.DapperKit.Web.Controllers
 
             try
             {
-                var users = await _DapperKit.DataSet<SysUser>()
+                var users = await _DapperContext.DbSet<SysUser>()
                                         .Select<SysUserRole>((u, r) => new SysUser() { Id = u.Id, IsAdmin = u.IsAdmin, LoginName = u.LoginName, LoginPwd = u.LoginPwd, CreateTime = u.CreateTime, UserName = u.UserName, UserRoleNo = u.UserRoleNo, RoleName = r.Name })
                                         .Join<SysUserRole>((u, r) => u.UserRoleNo == r.No)
                                         .Where(m => m.LoginName == model.Account && m.LoginPwd == model.Password)

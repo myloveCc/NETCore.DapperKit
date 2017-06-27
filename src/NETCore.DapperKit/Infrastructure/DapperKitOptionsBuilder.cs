@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
-using NETCore.DapperKit.Infrastructure.Internal;
 using NETCore.DapperKit.Shared;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using NETCore.DapperKit.Core;
@@ -47,8 +46,8 @@ namespace NETCore.DapperKit.Infrastructure
         /// <param name="options"></param>
         private void AddProviderService(DapperKitOptions options)
         {
-            DapperKitProvider provider = new DapperKitProvider(options);
-            serviceCollection.TryAddSingleton<IDapperKitProvider>(provider);
+            DapperContext context = new DapperContext(options);
+            serviceCollection.TryAddSingleton<IDapperContext>(context);
         }
     }
 }

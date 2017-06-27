@@ -7,7 +7,7 @@ using System.Text;
 using System.Collections.Concurrent;
 using System.Reflection.Emit;
 using Dapper;
-using NETCore.DapperKit.ExpressionToSql.Internal;
+using NETCore.DapperKit.ExpressionVisitor.Internal;
 
 #if COREFX
 using DataException = System.InvalidOperationException;

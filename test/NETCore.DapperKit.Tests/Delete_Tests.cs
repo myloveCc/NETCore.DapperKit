@@ -1,18 +1,18 @@
 using System;
 using Xunit;
 using NETCore.DapperKit.Extensions;
-using NETCore.DapperKit.ExpressionToSql.Extensions;
+using NETCore.DapperKit.ExpressionVisitor.Extensions;
 using NETCore.DapperKit.Tests.Model;
 
 namespace NETCore.DapperKit.Tests
 {
     public class Delete_Tests
     {
-        private readonly IDapperKitProvider _DapperContext;
+        private readonly IDapperContext _DapperContext;
 
         public Delete_Tests()
         {
-            _DapperContext = new DapperKitProvider(new Infrastructure.Internal.DapperKitOptions()
+            _DapperContext = new DapperContext(new DapperKitOptions()
             {
                 ConnectionString = "127.0.0.1",
                 DatabaseType = Infrastructure.Internal.DatabaseType.SQLServer
@@ -22,7 +22,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete all test")]
         public void Delete_All_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete();
+            var query = _DapperContext.DbSet<SysUser>().Delete();
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -33,7 +33,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete where test")]
         public void Delete_Where_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => m.Id == 1 && m.Account == "admin");
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -44,7 +44,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete with is admin test")]
         public void Delete_Where_IsAdmin_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => m.IsAdmin && m.Id == 1 && m.Account == "admin");
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => m.IsAdmin && m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -57,7 +57,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete with is admin true test")]
         public void Delete_Where_IsAdmin_True_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => m.IsAdmin == true && m.Id == 1 && m.Account == "admin");
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => m.IsAdmin == true && m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -71,7 +71,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete with is not admin test")]
         public void Delete_Where_IsNotAdmin_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => !m.IsAdmin && m.Id == 1 && m.Account == "admin");
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => !m.IsAdmin && m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -84,7 +84,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete with is admin false test")]
         public void Delete_Where_IsAdmin_False_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => m.IsAdmin == false && m.Id == 1 && m.Account == "admin");
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => m.IsAdmin == false && m.Id == 1 && m.Account == "admin");
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -97,7 +97,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete with datetime converter test")]
         public void Delete_Where_DateTime_Converter_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => m.CreateTime >= Convert.ToDateTime("1987-01-28"));
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => m.CreateTime >= Convert.ToDateTime("1987-01-28"));
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -111,7 +111,7 @@ namespace NETCore.DapperKit.Tests
         public void Delete_Where_DateTime_Value_Test()
         {
             var time = Convert.ToDateTime("1987-01-28");
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => m.CreateTime >= time);
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => m.CreateTime >= time);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -124,7 +124,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete with datetime now test ")]
         public void Delete_Where_DateTime_Now_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => m.CreateTime >= DateTime.Now);
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => m.CreateTime >= DateTime.Now);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
@@ -138,7 +138,7 @@ namespace NETCore.DapperKit.Tests
         [Fact(DisplayName = "Delete with datetime null test")]
         public void Delete_Where_DateTime_Null_Test()
         {
-            var query = _DapperContext.DataSet<SysUser>().Delete(m => m.CreateTime == null);
+            var query = _DapperContext.DbSet<SysUser>().Delete(m => m.CreateTime == null);
             var sqlBuilder = query.SqlBuilder;
 
             var sql = sqlBuilder.GetSql();
