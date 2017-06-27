@@ -16,21 +16,46 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             {
                 Check.Argument.IsNotNull(expression, nameof(expression), "SqlVistorProvider expression must not null");
             }
+
             if (expression is BinaryExpression)
             {
                 return new BinarySqlVisitor();
             }
-            if (expression is BlockExpression)
-            {
-                throw new NotImplementedException("Unimplemented BlockExpressionSqlManager");
-            }
-            if (expression is ConditionalExpression)
-            {
-                throw new NotImplementedException("Unimplemented ConditionalExpressionSqlManager");
-            }
             if (expression is ConstantExpression)
             {
                 return new ConstantSqlVisitor();
+            }
+            if (expression is ListInitExpression)
+            {
+                return new ListInitSqlVisitor();
+            }
+            if (expression is MemberExpression)
+            {
+                return new MemberSqlVisitor();
+            }
+            if (expression is MemberInitExpression)
+            {
+                return new MemberInitSqlVisitor();
+            }
+            if (expression is MethodCallExpression)
+            {
+                return new MethodCallSqlVisitor();
+            }
+            if (expression is NewArrayExpression)
+            {
+                return new NewArraySqlVisitor();
+            }
+            if (expression is NewExpression)
+            {
+                return new NewSqlVisitor();
+            }
+            if (expression is ParameterExpression)
+            {
+                return new ParameterSqlVisitor();
+            }
+            if (expression is UnaryExpression)
+            {
+                return new UnarySqlVisitor();
             }
             if (expression is DebugInfoExpression)
             {
@@ -64,37 +89,9 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             {
                 throw new NotImplementedException("Unimplemented LambdaExpressionSqlManager");
             }
-            if (expression is ListInitExpression)
-            {
-                return new ListInitSqlVisitor();
-            }
             if (expression is LoopExpression)
             {
                 throw new NotImplementedException("Unimplemented LoopExpressionSqlManager");
-            }
-            if (expression is MemberExpression)
-            {
-                return new MemberSqlVisitor();
-            }
-            if (expression is MemberInitExpression)
-            {
-                return new MemberInitSqlVisitor();
-            }
-            if (expression is MethodCallExpression)
-            {
-                return new MethodCallSqlVisitor();
-            }
-            if (expression is NewArrayExpression)
-            {
-                return new NewArraySqlVisitor();
-            }
-            if (expression is NewExpression)
-            {
-                return new NewSqlVisitor();
-            }
-            if (expression is ParameterExpression)
-            {
-                return new ParameterSqlVisitor();
             }
             if (expression is RuntimeVariablesExpression)
             {
@@ -112,11 +109,14 @@ namespace NETCore.DapperKit.ExpressionToSql.SqlVisitor
             {
                 throw new NotImplementedException("Unimplemented TypeBinaryExpressionSqlManager");
             }
-            if (expression is UnaryExpression)
+            if (expression is BlockExpression)
             {
-                return new UnarySqlVisitor();
+                throw new NotImplementedException("Unimplemented BlockExpressionSqlManager");
             }
-
+            if (expression is ConditionalExpression)
+            {
+                throw new NotImplementedException("Unimplemented ConditionalExpressionSqlManager");
+            }
             throw new NotImplementedException("Unimplemented ExpressionSqlManager");
         }
 
