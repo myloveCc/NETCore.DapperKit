@@ -1,6 +1,6 @@
 # NETCore.DapperKit
 
-## Easy use [Dapper](https://github.com/StackExchange/Dapper) like ef with expression.
+## Easy use [Dapper](https://github.com/StackExchange/Dapper) like ef with DapperKit.
 
 
 ---
