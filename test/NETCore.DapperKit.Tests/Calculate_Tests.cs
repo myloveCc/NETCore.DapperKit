@@ -14,7 +14,7 @@ namespace NETCore.DapperKit.Tests
             _DapperContext = new DapperContext(new DapperKitOptions()
             {
                 ConnectionString = "127.0.0.1",
-                DatabaseType = Infrastructure.Internal.DatabaseType.SQLServer
+                DatabaseType = DatabaseType.SQLServer
             });
         }
 
