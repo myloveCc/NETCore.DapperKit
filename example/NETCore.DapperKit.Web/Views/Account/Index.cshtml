@@ -30,7 +30,7 @@
 <body class="gray-bg">
     <div class="container animated fadeInDown">
         <form class="form-signin" asp-area="Passport" asp-controller="Account" asp-action="Login" method="post" asp-route-returnurl="@ViewData["ReturnUrl"]">
-            <h2 class="form-signin-heading">Dapper Kit</h2>
+            <h2 class="form-signin-heading">Dapper Kit Example</h2>
             <div class="login-wrap">
                 <input type="text" asp-for="Account" class="form-control" placeholder="账号" autofocus>
                 <span asp-validation-for="Account" class="text-danger"></span>
@@ -38,10 +38,10 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
                 <label class="checkbox">
                     <span class="pull-right">
-                        <input type="checkbox" value="remember-me"> 记住密码
+                        <input type="checkbox" value="remember-me"> Forget pasword
                     </span>
                 </label>
-                <button class="btn btn-lg btn-login btn-block" style="margin-top:40px" type="submit">登  录</button>
+                <button class="btn btn-lg btn-login btn-block" style="margin-top:40px" type="submit">Sign in</button>
                 <span style="color:red">
                     @ViewData["ErrMsg"]
                 </span>
