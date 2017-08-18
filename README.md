@@ -10,7 +10,7 @@
 - To install NETCore.DapperKit, run the following command in the [Package Manager](https://docs.microsoft.com/zh-cn/nuget/tools/package-manager-console) Console
 
 ```
-Install-Package NETCore.DapperKit -Pre
+Install-Package NETCore.DapperKit -Version 2.0.0
 ```
 
 # Add Dapperkit service in starup.cs
