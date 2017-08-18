@@ -44,7 +44,7 @@ namespace NETCore.DapperKit.Extensions
 #if COREFX
         public static IEnumerable<Attribute> GetCustomAttributes(this Type type, bool inherit)
         {
-            return type.GetTypeInfo().GetCustomAttributes(inherit);
+            return type.GetTypeInfo().GetCustomAttributes(inherit) as IEnumerable<Attribute>;
         }
 
         public static TypeCode GetTypeCode(Type type)

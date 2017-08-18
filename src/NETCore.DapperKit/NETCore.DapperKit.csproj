@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.1.0-beta2</Version>
+    <Version>2.0.0</Version>
     <Company>Lvcc</Company>
     <Authors>Lvcc</Authors>
     <Description>Dapper extensions, suport expression to sql ,so you can use dapper like ef.</Description>
@@ -13,7 +13,7 @@
     <PackageTags>Dapper ExrepssionToSql</PackageTags>
     <PackageLicenseUrl>https://github.com/myloveCc/NETCore.DapperKit/blob/master/License</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>NETCore.DapperKit 1.1.0-beta2</PackageReleaseNotes>
+    <PackageReleaseNotes>NETCore.DapperKit 2.0.0, update to .net core 2.0 rtm</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -26,8 +26,8 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="1.1.1" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.3.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.4.0" />
   </ItemGroup>
 
 </Project>
