@@ -18,22 +18,12 @@ namespace NETCore.DapperKit.Web.Controllers
 
         public IActionResult Index()
         {
-            var model = new DapperKitModel()
-            {
-                Account = "dswq42",
-                Password = "123456"
-            };
-
-            var result = _DapperRepository.Insert(model);
-
             return View();
         }
 
         public async Task<IActionResult> About()
         {
             ViewData["Message"] = "Your application description page.";
-
-            var result = await _DapperRepository.GetAllAsync<DapperKitModel>();
 
             return View();
         }

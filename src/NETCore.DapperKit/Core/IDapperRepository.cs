@@ -2,6 +2,7 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,6 +32,9 @@ namespace NETCore.DapperKit.Core
 
         T GetInfo<T>(string sql, DynamicParameters param = null, CommandType? type = null) where T : class;
 
+        IEnumerable<T> GetList<T>(string sql, DynamicParameters param = null, CommandType? type = null) where T : class;
+
+
         IEnumerable<T> GetAll<T>() where T : class;
 
         bool Transation(Action<IDbConnection, IDbTransaction, int?> action);
@@ -54,11 +58,14 @@ namespace NETCore.DapperKit.Core
 
         Task<bool> DeleteAllAsync<T>() where T : class;
 
+        Task<IEnumerable<T>> GetAllAsync<T>() where T : class;
+
         Task<T> GetInfoAsync<T>(dynamic id) where T : class;
 
         Task<T> GetInfoAsync<T>(string sql, DynamicParameters param = null, CommandType? type = null) where T : class;
 
-        Task<IEnumerable<T>> GetAllAsync<T>() where T : class;
+        Task<IEnumerable<T>> GetListAsync<T>(string sql, DynamicParameters param = null, CommandType? type = null) where T : class;
+
 
         Task<bool> TransationAsync(Action<IDbConnection, IDbTransaction, int?> action);
 

@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NETCore.DapperKit.Extensions;
-using NETCore.DapperKit.Infrastructure.Internal;
 
 namespace NETCore.DapperKit.Web
 {
@@ -64,7 +63,7 @@ namespace NETCore.DapperKit.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Account}/{action=Index}/{id?}");
             });
         }
     }

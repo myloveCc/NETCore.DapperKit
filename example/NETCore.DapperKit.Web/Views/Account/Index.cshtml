@@ -1,0 +1,56 @@
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model LoginViewModel
+@{
+
+}
+<html>
+<head>
+    <title>登录</title>
+    <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+          asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+          asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+    <link href="~/lib/flatLab/css/bootstrap-reset.css" rel="stylesheet" />
+    <link href="~/lib/flatLab/css/style.css" rel="stylesheet" />
+    <link href="~/lib/flatLab/css/style-responsive.css" rel="stylesheet" />
+    <link href="~/css/animate.css" rel="stylesheet" />
+    <link href="~/lib/flatLab/Font-Awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/css/site.css" asp-append-version="true" rel="stylesheet" />
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+            asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+            asp-fallback-test="window.jQuery">
+    </script>
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
+            asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+            asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+    </script>
+    <script src="~/js/plugins/modal-plugin.js"></script>
+</head>
+<body class="gray-bg">
+    <div class="container animated fadeInDown">
+        <form class="form-signin" asp-area="Passport" asp-controller="Account" asp-action="Login" method="post" asp-route-returnurl="@ViewData["ReturnUrl"]">
+            <h2 class="form-signin-heading">Dapper Kit Example</h2>
+            <div class="login-wrap">
+                <input type="text" asp-for="Account" class="form-control" placeholder="账号" autofocus>
+                <span asp-validation-for="Account" class="text-danger"></span>
+                <input type="password" asp-for="Password" class="form-control" placeholder="密码">
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <label class="checkbox">
+                    <span class="pull-right">
+                        <input type="checkbox" value="remember-me"> Forget pasword
+                    </span>
+                </label>
+                <button class="btn btn-lg btn-login btn-block" style="margin-top:40px" type="submit">Sign in</button>
+                <span style="color:red">
+                    @ViewData["ErrMsg"]
+                </span>
+            </div>
+        </form>
+    </div>
+
+    @section Scripts {
+        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    }
+</body>
+</html>
